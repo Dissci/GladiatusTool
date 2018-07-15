@@ -51,7 +51,7 @@ public class Login {
         } catch (IOException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
-        loadServers();
+        loadServersFromURL();
     }
 
     private void readData() {
@@ -72,7 +72,7 @@ public class Login {
         setUser(user);
     }
     
-    private void loadServers() {
+    private void loadServersFromURL() {
         try {
             URL address = new URL("https://"+LANG+URL);
             HttpsURLConnection con = (HttpsURLConnection) address.openConnection();
@@ -149,7 +149,7 @@ public class Login {
     }
 
     public void setServerList() {
-        loadServers();
+        loadServersFromURL();
     }
 
     public String getLANG() {
