@@ -29,24 +29,9 @@ public class GladiatusTool {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-
-        URL oracle = new URL("https://sk.gladiatus.gameforge.com/game/");
-        HttpsURLConnection con = (HttpsURLConnection)oracle.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        //BufferedReader in = new BufferedReader(new InputStreamReader(oracle.openStream()));
-        String inputLine;
-        StringBuilder builder = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            builder.append(inputLine);
-        }
-        String html = builder.toString();
-        System.out.println(html);
-        Document doc = Jsoup.parse(html);
-        Element element = doc.getElementById("login_server");
-        List<Element> lis = element.getAllElements();
-        for(int i = 0; i < lis.size(); i++) {
-            System.out.println(lis.get(i).text());
-        }
+LoginFrame frame = new LoginFrame();
+frame.setVisible(true);
+        
         System.setProperty("webdriver.firefox.driver", "‪C:/Program Files/Mozilla Firefox/firefox.exe");
         System.setProperty("webdriver.gecko.driver", "C:/Users/Tomáš/Downloads/geckodriver-v0.21.0-win64/geckodriver.exe");
         WebDriver driver = new FirefoxDriver();

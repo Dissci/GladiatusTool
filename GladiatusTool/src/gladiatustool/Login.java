@@ -5,11 +5,21 @@
  */
 package gladiatustool;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 /**
  *
@@ -24,7 +34,10 @@ public class Login {
     private String server;
     private boolean expeditions;
     private boolean dungeons;
-    private String serverList;  
+    private List<String> serverList;  
+    private String LANG;
+    private String URL;
+    
 
     public Login() {
         init();
@@ -38,7 +51,7 @@ public class Login {
         } catch (IOException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        loadServers();
     }
 
     private void readData() {
@@ -47,6 +60,8 @@ public class Login {
         server = properties.getProperty("server");
         expeditions = Boolean.parseBoolean(properties.getProperty("expeditions"));
         dungeons = Boolean.parseBoolean(properties.getProperty("dungeons"));
+        LANG = properties.getProperty("lang");
+        URL = properties.getProperty("url");
     }
 
     private void saveData(String user, String password, String server, boolean expeditions, boolean dungeons) {
@@ -56,6 +71,34 @@ public class Login {
         setServer(server);
         setUser(user);
     }
+    
+    private void loadServers() {
+        try {
+            URL address = new URL("https://"+LANG+URL);
+            HttpsURLConnection con = (HttpsURLConnection) address.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder builder = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                builder.append(inputLine);
+            }
+            String html = builder.toString();
+            Document doc = Jsoup.parse(html);
+            Element element = doc.getElementById("login_server");
+            List<Element> lis = element.getAllElements();
+            serverList = new ArrayList();
+            for (int i = 0; i < lis.size(); i++) {
+                if (lis.get(i).childNodeSize() == 1) {
+                    serverList.add(lis.get(i).text());
+                }
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public String getUser() {
         return user;
     }
@@ -101,4 +144,19 @@ public class Login {
         properties.setProperty("dungeons", Boolean.toString(dungeons));
     }
 
+    public List<String> getServerList() {
+        return serverList;
+    }
+
+    public void setServerList() {
+        loadServers();
+    }
+
+    public String getLANG() {
+        return LANG;
+    }
+
+    public void setLANG(String LANG) {
+        this.LANG = LANG;
+    } 
 }
