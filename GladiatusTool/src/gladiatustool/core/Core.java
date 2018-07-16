@@ -23,7 +23,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  *
  * @author Tomáš
  */
-public class Core {
+public class Core implements Runnable {
 
     private final PriorityQueue<Message> queue;
     public static WebDriver DRIVER;
@@ -68,7 +68,7 @@ public class Core {
         queue.add(msg1);
     }
 
-    public void start() {
+    private void start() {
         initBeforeStart();
         while (true) {
 
@@ -83,7 +83,7 @@ public class Core {
         System.out.println("Execute at: " + date.toString());
 
         Date date1 = new Date(System.currentTimeMillis());
-        System.out.println("Current: " + date1.toString());
+        System.out.println("Current   : " + date1.toString());
 
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             Message msg = queue.poll();
@@ -96,10 +96,16 @@ public class Core {
     }
 
     private void sleepCore() {
+        Thread th = new Thread();
         try {
-            Thread.sleep(sleepTime);
+            th.sleep(sleepTime);
         } catch (InterruptedException ex) {
             Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void run() {
+        start();
     }
 }

@@ -6,6 +6,9 @@
 package gladiatustool.manager;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openqa.selenium.WebElement;
 
 /**
  *
@@ -13,7 +16,7 @@ import java.util.Random;
  */
 public abstract class Manager {
 
-    protected Long lag;
+    protected long lag;
     protected Random rndLag;
 
     public Manager(Long lag) {
@@ -34,7 +37,7 @@ public abstract class Manager {
     }
 
     protected long getRandomLag() {
-        return 0L;//rndLag.nextLong();
+        return rndLag.nextInt((int) lag);
     }
 
     protected long calculateNextExecute(String cooldown) {
@@ -43,20 +46,21 @@ public abstract class Manager {
             StringBuilder builder = new StringBuilder(cooldown);
             String seconds = builder.substring(builder.lastIndexOf(":") + 1);
             String minutes = builder.substring(builder.indexOf(":") + 1, builder.lastIndexOf(":"));
-            minutes = cutNul(minutes);
-            seconds = cutNul(seconds);
-            time += Long.parseLong(minutes, 10) * 60000;
-            time += Long.parseLong(seconds, 10) * 1000;
+
+            time += (Long.parseLong(minutes, 10) * 60000);
+            time += (Long.parseLong(seconds, 10) * 1000);
         }
         time += getRandomLag();
         return time;
     }
 
-    private String cutNul(String time) {
-        StringBuilder builder = new StringBuilder(time);
-        if (builder.charAt(0) == '0') {
-            time = builder.substring(1);
+    protected void click(WebElement element) {
+        Thread th = new Thread();
+        try {
+            th.sleep(500);
+            element.click();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return time;
     }
 }

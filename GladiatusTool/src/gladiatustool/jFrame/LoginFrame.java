@@ -91,9 +91,9 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private int getDungeonMode() {
         if (jRadioButton6.isSelected()) {
-            return 0;
-        } else {
             return 1;
+        } else {
+            return 2;
         }
     }
 
@@ -106,7 +106,7 @@ public class LoginFrame extends javax.swing.JFrame {
             core = new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
                     driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
                     getExpeditionEnemy(), getDungeonMode(), getLag());
-            core.start();
+            core.run();
         }
     }
 
@@ -305,7 +305,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGap(0, 9, Short.MAX_VALUE))
         );
 
-        jLabel7.setText("Lag(Minutes):");
+        jLabel7.setText("Lag+-(Seconds):");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -332,7 +332,7 @@ public class LoginFrame extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(dungeonOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(23, 23, 23))

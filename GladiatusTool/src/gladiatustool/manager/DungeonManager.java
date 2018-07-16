@@ -6,8 +6,9 @@
 package gladiatustool.manager;
 
 import gladiatustool.core.Core;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -16,26 +17,40 @@ import org.openqa.selenium.WebElement;
  */
 public class DungeonManager extends Manager {
 
-    private int dungeonMode;
+    private final int dungeonMode;
 
     public DungeonManager(Long lag, int dungeonMode) {
         super(lag);
         this.dungeonMode = dungeonMode;
     }
 
+    private void openDungeon() {
+        String button = "dif" + dungeonMode;
+        WebElement dungeonOption = Core.DRIVER.findElement(By.name(button));
+        click(dungeonOption);
+    }
+
     @Override
     public void execute() {
         WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
-        dungeon.click();
-        Core.DRIVER.findElement(By.className("map_label")).click();
-        /**
-         * Tu este pridat situaciu ked skonci zalar a treba otvorit novy !!!
-         */
-
+        click(dungeon);
+        WebElement enemy;
+        try {
+            enemy = Core.DRIVER.findElement(By.className("map_label"));
+        } catch (Throwable e) {
+            openDungeon();
+            enemy = Core.DRIVER.findElement(By.className("map_label"));
+        }
+        click(enemy);
     }
 
     @Override
     public Message getPlan() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DungeonManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_dungeon"));
         String time = cooldown_bar.getText();
         Long cooldown = calculateNextExecute(time);
