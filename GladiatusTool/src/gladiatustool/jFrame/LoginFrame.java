@@ -106,6 +106,7 @@ public class LoginFrame extends javax.swing.JFrame {
             core = new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
                     driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
                     getExpeditionEnemy(), getDungeonMode(), getLag());
+            core.start();
         }
     }
 

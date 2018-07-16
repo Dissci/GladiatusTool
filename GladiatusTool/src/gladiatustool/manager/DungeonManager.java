@@ -5,6 +5,7 @@
  */
 package gladiatustool.manager;
 
+import gladiatustool.core.Core;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,17 +17,17 @@ import org.openqa.selenium.WebElement;
 public class DungeonManager extends Manager {
 
     private int dungeonMode;
-    
-    public DungeonManager(WebDriver driver, Long lag, int dungeonMode) {
-        super(driver, lag);
+
+    public DungeonManager(Long lag, int dungeonMode) {
+        super(lag);
         this.dungeonMode = dungeonMode;
     }
 
     @Override
     public void execute() {
-        WebElement dungeon = driver.findElement(By.id("cooldown_bar_dungeon"));
+        WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
         dungeon.click();
-        driver.findElement(By.className("map_label")).click();
+        Core.DRIVER.findElement(By.className("map_label")).click();
         /**
          * Tu este pridat situaciu ked skonci zalar a treba otvorit novy !!!
          */
@@ -35,7 +36,9 @@ public class DungeonManager extends Manager {
 
     @Override
     public Message getPlan() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_dungeon"));
+        String time = cooldown_bar.getText();
+        Long cooldown = calculateNextExecute(time);
+        return new Message(cooldown, this);
     }
-
 }

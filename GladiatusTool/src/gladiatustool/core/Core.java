@@ -11,6 +11,7 @@ import gladiatustool.manager.ExpeditionManager;
 import gladiatustool.manager.LoginManager;
 import gladiatustool.manager.Message;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,16 +25,15 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  */
 public class Core {
 
-    private long time = System.currentTimeMillis();
     private final PriorityQueue<Message> queue;
-    private WebDriver driver;
+    public static WebDriver DRIVER;
     private final long sleepTime = 1000;
     private final LoginManager login;
     private final DungeonManager dungeonManager;
     private final ExpeditionManager expeditionManager;
 
     public Core(String url, boolean chrome, UserConfiguration userConfiguration, int serverIndex, int expeditionEnemy, int dungeonMode, long lag) {
-        driver = initDriver(url, chrome);
+        initDriver(url, chrome);
         queue = new PriorityQueue<>(new Comparator<Message>() {
             @Override
             public int compare(Message o1, Message o2) {
@@ -44,24 +44,28 @@ public class Core {
                 }
             }
         });
-        login = new LoginManager(driver, userConfiguration, serverIndex);
-        dungeonManager = new DungeonManager(driver, lag, dungeonMode);
-        expeditionManager = new ExpeditionManager(driver, lag, expeditionEnemy);
+        login = new LoginManager(userConfiguration, serverIndex);
+        dungeonManager = new DungeonManager(lag, dungeonMode);
+        expeditionManager = new ExpeditionManager(lag, expeditionEnemy);
     }
 
-    public WebDriver initDriver(String url, boolean chrome) {
+    private void initDriver(String url, boolean chrome) {
         if (chrome) {
-            driver = new ChromeDriver();
+            DRIVER = new ChromeDriver();
         } else {
-            driver = new FirefoxDriver();
+            DRIVER = new FirefoxDriver();
         }
-        driver.manage().window().maximize();
-        driver.get(url);
-        return driver;
+        DRIVER.manage().window().maximize();
+        DRIVER.get("https:" + url);
     }
 
     private void initBeforeStart() {
+        login.execute();
 
+        Message msg = expeditionManager.getPlan();
+        queue.add(msg);
+        Message msg1 = dungeonManager.getPlan();
+        queue.add(msg1);
     }
 
     public void start() {
@@ -75,6 +79,12 @@ public class Core {
     }
 
     private void executeMessage() {
+        Date date = new Date(queue.peek().getExecuteTime());
+        System.out.println("Execute at: " + date.toString());
+
+        Date date1 = new Date(System.currentTimeMillis());
+        System.out.println("Current: " + date1.toString());
+
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             Message msg = queue.poll();
             msg.execute();
