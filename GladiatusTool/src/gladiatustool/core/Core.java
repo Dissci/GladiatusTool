@@ -80,11 +80,7 @@ public class Core implements Runnable {
 
     private void executeMessage() {
         Date date = new Date(queue.peek().getExecuteTime());
-        System.out.println("Execute at: " + date.toString());
-
         Date date1 = new Date(System.currentTimeMillis());
-        System.out.println("Current   : " + date1.toString());
-
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             Message msg = queue.poll();
             msg.execute();

@@ -6,9 +6,11 @@
 package gladiatustool.manager;
 
 import gladiatustool.core.Core;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -25,9 +27,18 @@ public class DungeonManager extends Manager {
     }
 
     private void openDungeon() {
-        String button = "dif" + dungeonMode;
-        WebElement dungeonOption = Core.DRIVER.findElement(By.name(button));
-        click(dungeonOption);
+        try {
+            String button = "dif" + dungeonMode;
+            WebElement dungeonOption = Core.DRIVER.findElement(By.name(button));
+            click(dungeonOption);
+        } catch (Throwable e) {
+            List<WebElement> allImages = Core.DRIVER.findElements(By.tagName("img"));
+            for (WebElement allImage : allImages) {
+                if (allImage.getAttribute("src").contains("combatloc.gif")) {
+                    click(allImage);
+                }
+            }
+        }
     }
 
     @Override

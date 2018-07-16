@@ -37,7 +37,7 @@ public abstract class Manager {
     }
 
     protected long getRandomLag() {
-        return rndLag.nextInt((int) lag);
+        return 0L;//rndLag.nextInt((int) lag);
     }
 
     protected long calculateNextExecute(String cooldown) {

@@ -29,24 +29,31 @@ public class ExpeditionManager extends Manager {
 
     @Override
     public void execute() {
-        WebElement expedition = Core.DRIVER.findElement(By.id("cooldown_bar_expedition"));
-        click(expedition);
-        WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
-        List<WebElement> listt = attack.findElements(By.className("expedition_box"));
-        click(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
+        try {
+            WebElement expedition = Core.DRIVER.findElement(By.id("cooldown_bar_expedition"));
+            click(expedition);
+            WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
+            List<WebElement> listt = attack.findElements(By.className("expedition_box"));
+            click(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
+        } catch (Throwable e) {
+
+        }
     }
 
     @Override
     public Message getPlan() {
+        Thread th = new Thread();
         try {
-            Thread.sleep(500);
+            th.sleep(500);
+            WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
+            String time = cooldown_bar.getText();
+            Long cooldown = calculateNextExecute(time);
+            return new Message(cooldown, this);
         } catch (InterruptedException ex) {
             Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Throwable e) {
+
         }
-        WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
-        String time = cooldown_bar.getText();
-        Long cooldown = calculateNextExecute(time);
-        System.out.println(new Date(cooldown).toString());
-        return new Message(cooldown, this);
+        return null;
     }
 }
