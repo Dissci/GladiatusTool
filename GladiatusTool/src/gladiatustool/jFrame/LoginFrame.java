@@ -5,8 +5,8 @@
  */
 package gladiatustool.jFrame;
 
-import gladiatustool.DriverConfiguration;
-import gladiatustool.UserConfiguration;
+import gladiatustool.configuration.DriverConfiguration;
+import gladiatustool.configuration.UserConfiguration;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;

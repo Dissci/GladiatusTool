@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool;
+package gladiatustool.configuration;
 
 import gladiatustool.manager.LoginManager;
 import java.io.BufferedReader;
@@ -32,7 +32,7 @@ import org.jsoup.nodes.Element;
 public class DriverConfiguration {
 
     private final Properties properties = new Properties();
-    private final String configPropertiesName = "configProp.properties";
+    private final String configPropertiesName = "src/gladiatustool/properties/configProp.properties";
     private final String mozilla = "webdriver.firefox.driver";
     private final String chrome = "webdriver.chrome.driver";
     private final String gecko = "lib/geckodriver.exe";
@@ -60,6 +60,7 @@ public class DriverConfiguration {
             setStream(true, configPropertiesName);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
         }
     }
 
@@ -153,8 +154,8 @@ public class DriverConfiguration {
     public void setURL(String URL) {
         this.URL = URL;
     }
-    
-     private void setStream(boolean input, String propFile) throws FileNotFoundException {
+
+    private void setStream(boolean input, String propFile) throws FileNotFoundException {
         if (input) {
             if (out != null) {
                 try {
@@ -163,7 +164,13 @@ public class DriverConfiguration {
                     Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            //in = Properties.class.getResourceAsStream(propFile);
             in = new FileInputStream(propFile);
+            try {
+                properties.load(in);
+            } catch (IOException ex) {
+                Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             try {
                 if (in != null) {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool;
+package gladiatustool.configuration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class UserConfiguration {
 
     private final Properties properties = new Properties();
-    private final String userPropertiesName = "userProp.properties";
+    private final String userPropertiesName = "src/gladiatustool/properties/userProp.properties";
     private String user;
     private String password;
     private String server;
@@ -37,19 +37,26 @@ public class UserConfiguration {
 
     private void init() {
         try {
-            setStream(true, userPropertiesName);
-            setUserConfig();
-        } catch (FileNotFoundException ex) {
+            readUserConfig();
+        } catch (IOException ex) {
             Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void setUserConfig() {
-        setUser(properties.getProperty("user"));
-        setPassword(properties.getProperty("password"));
-        setServer(properties.getProperty("server"));
-        setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
-        setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
+    private void readUserConfig() throws IOException {
+        try {
+            setStream(true, userPropertiesName);
+
+            setUser(properties.getProperty("user"));
+            setPassword(properties.getProperty("password"));
+            setServer(properties.getProperty("server"));
+            setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
+            setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setUserConfig(String user, String password, String server, boolean expeditions, boolean dungeons) throws IOException {
@@ -110,7 +117,7 @@ public class UserConfiguration {
         this.dungeons = dungeons;
     }
 
-    private void setStream(boolean input, String propFile) throws FileNotFoundException {
+    private void setStream(boolean input, String propFile) throws FileNotFoundException, IOException {
         if (input) {
             if (out != null) {
                 try {
@@ -120,6 +127,7 @@ public class UserConfiguration {
                 }
             }
             in = new FileInputStream(propFile);
+            properties.load(in);
         } else {
             try {
                 if (in != null) {
