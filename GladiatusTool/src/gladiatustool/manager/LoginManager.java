@@ -20,8 +20,8 @@ public class LoginManager extends Manager {
     private UserConfiguration userConfiguration;
     private int indexServer;
 
-    LoginManager(UserConfiguration userConfiguration, WebDriver driver, int indexServer) {
-        super(driver, 300000L);
+    public LoginManager(WebDriver driver, UserConfiguration userConfiguration, int indexServer) {
+        super(driver, 1000L);
         this.userConfiguration = userConfiguration;
         this.indexServer = indexServer;
     }

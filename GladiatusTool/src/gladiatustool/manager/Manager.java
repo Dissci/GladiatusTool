@@ -16,7 +16,7 @@ public abstract class Manager {
 
     protected Long lag;
     protected WebDriver driver;
-    protected Random rndLag;
+    protected Random rndLag;    
 
     public Manager(WebDriver driver, Long lag) {
         this.driver = driver;

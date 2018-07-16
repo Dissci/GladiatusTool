@@ -15,8 +15,11 @@ import org.openqa.selenium.WebElement;
  */
 public class DungeonManager extends Manager {
 
-    public DungeonManager(WebDriver driver, Long lag) {
+    private int dungeonMode;
+    
+    public DungeonManager(WebDriver driver, Long lag, int dungeonMode) {
         super(driver, lag);
+        this.dungeonMode = dungeonMode;
     }
 
     @Override

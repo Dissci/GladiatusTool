@@ -5,6 +5,10 @@
  */
 package gladiatustool.core;
 
+import gladiatustool.configuration.UserConfiguration;
+import gladiatustool.manager.DungeonManager;
+import gladiatustool.manager.ExpeditionManager;
+import gladiatustool.manager.LoginManager;
 import gladiatustool.manager.Message;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -21,11 +25,14 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Core {
 
     private long time = System.currentTimeMillis();
-    private PriorityQueue<Message> queue;
+    private final PriorityQueue<Message> queue;
     private WebDriver driver;
     private final long sleepTime = 1000;
+    private final LoginManager login;
+    private final DungeonManager dungeonManager;
+    private final ExpeditionManager expeditionManager;
 
-    public Core(String url, boolean chrome) {
+    public Core(String url, boolean chrome, UserConfiguration userConfiguration, int serverIndex, int expeditionEnemy, int dungeonMode, long lag) {
         driver = initDriver(url, chrome);
         queue = new PriorityQueue<>(new Comparator<Message>() {
             @Override
@@ -37,9 +44,12 @@ public class Core {
                 }
             }
         });
+        login = new LoginManager(driver, userConfiguration, serverIndex);
+        dungeonManager = new DungeonManager(driver, lag, dungeonMode);
+        expeditionManager = new ExpeditionManager(driver, lag, expeditionEnemy);
     }
 
-    public WebDriver initDriver(String url, boolean chrome) {       
+    public WebDriver initDriver(String url, boolean chrome) {
         if (chrome) {
             driver = new ChromeDriver();
         } else {
@@ -50,8 +60,12 @@ public class Core {
         return driver;
     }
 
-    public void start() {
+    private void initBeforeStart() {
 
+    }
+
+    public void start() {
+        initBeforeStart();
         while (true) {
 
             executeMessage();

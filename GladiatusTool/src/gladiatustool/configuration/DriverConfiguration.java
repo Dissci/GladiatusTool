@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
+import javax.swing.JOptionPane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -127,7 +128,9 @@ public class DriverConfiguration extends Configuration {
         } catch (MalformedURLException ex) {
             Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Internet connetction problem !", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
         }
         return list;
     }
