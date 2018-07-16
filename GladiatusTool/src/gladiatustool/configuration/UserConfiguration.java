@@ -5,13 +5,7 @@
  */
 package gladiatustool.configuration;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,19 +13,16 @@ import java.util.logging.Logger;
  *
  * @author krkoska.tomas
  */
-public class UserConfiguration {
+public class UserConfiguration extends Configuration {
 
-    private final Properties properties = new Properties();
-    private final String userPropertiesName = "src/gladiatustool/properties/userProp.properties";
     private String user;
     private String password;
     private String server;
     private boolean expeditions;
     private boolean dungeons;
-    private InputStream in;
-    private FileOutputStream out;
 
     public UserConfiguration() {
+        super(true, "userProp.properties");
         init();
     }
 
@@ -44,23 +35,15 @@ public class UserConfiguration {
     }
 
     private void readUserConfig() throws IOException {
-        try {
-            setStream(true, userPropertiesName);
-
-            setUser(properties.getProperty("user"));
-            setPassword(properties.getProperty("password"));
-            setServer(properties.getProperty("server"));
-            setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
-            setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        setUser(properties.getProperty("user"));
+        setPassword(properties.getProperty("password"));
+        setServer(properties.getProperty("server"));
+        setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
+        setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
     }
 
     public void setUserConfig(String user, String password, String server, boolean expeditions, boolean dungeons) throws IOException {
-        setStream(false, userPropertiesName);
+        setStream(false, FULL_PATH);
         setUser(user);
         setPassword(password);
         setServer(server);
@@ -115,30 +98,5 @@ public class UserConfiguration {
 
     public void setDungeons(boolean dungeons) {
         this.dungeons = dungeons;
-    }
-
-    private void setStream(boolean input, String propFile) throws FileNotFoundException, IOException {
-        if (input) {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            in = new FileInputStream(propFile);
-            properties.load(in);
-        } else {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                out = new FileOutputStream(propFile);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 }

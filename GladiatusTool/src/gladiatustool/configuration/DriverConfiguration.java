@@ -7,17 +7,12 @@ package gladiatustool.configuration;
 
 import gladiatustool.manager.LoginManager;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
@@ -29,38 +24,35 @@ import org.jsoup.nodes.Element;
  *
  * @author krkoska.tomas
  */
-public class DriverConfiguration {
+public class DriverConfiguration extends Configuration {
 
-    private final Properties properties = new Properties();
-    private final String configPropertiesName = "src/gladiatustool/properties/configProp.properties";
     private final String mozilla = "webdriver.firefox.driver";
     private final String chrome = "webdriver.chrome.driver";
     private final String gecko = "lib/geckodriver.exe";
-    private InputStream in;
-    private FileOutputStream out;
     private String webDriver;
     private boolean isChrome;
     private String LANG;
     private String URL;
 
-    public DriverConfiguration(String webDriver, boolean isChrome) {
-        this.isChrome = isChrome;
+    public DriverConfiguration(String webDriver) {
+        super(true, "configProp.properties");
         this.webDriver = webDriver;
-        initSystemProperty();
-        init();
+        isWebDriverChrome();
+        initSystemProperties(webDriver, isChrome);
+
     }
 
     public DriverConfiguration() {
-        init();
+        super(true, "configProp.properties");
         setDriverConfig();
+        initSystemProperty();
     }
 
-    public void init() {
-        try {
-            setStream(true, configPropertiesName);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            System.exit(0);
+    private void isWebDriverChrome() {
+        if (webDriver.contains("chrome")) {
+            isChrome = true;
+        } else {
+            isChrome = false;
         }
     }
 
@@ -79,9 +71,26 @@ public class DriverConfiguration {
 
     private void setDriverConfig() {
         setIsChrome(Boolean.parseBoolean(properties.getProperty("chrome")));
-        setWebDriver(properties.getProperty("webDriver"));
+        setWebDriver(properties.getProperty("webdriver"));
         setLANG(properties.getProperty("lang"));
         setURL(properties.getProperty("url"));
+    }
+
+    public void setDriverConfig(String webDriver, String lang) {
+        try {
+            setStream(false, FULL_PATH);
+            setWebDriver(webDriver);
+            setLANG(lang);
+            isWebDriverChrome();
+            properties.setProperty("chrome", Boolean.toString(isChrome));
+            properties.setProperty("webdriver", webDriver);
+            properties.setProperty("lang", lang);
+
+            properties.store(out, null);
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initSystemProperty() {
@@ -129,6 +138,7 @@ public class DriverConfiguration {
 
     public void setWebDriver(String webDriver) {
         this.webDriver = webDriver;
+        isWebDriverChrome();
     }
 
     public boolean isIsChrome() {
@@ -153,35 +163,5 @@ public class DriverConfiguration {
 
     public void setURL(String URL) {
         this.URL = URL;
-    }
-
-    private void setStream(boolean input, String propFile) throws FileNotFoundException {
-        if (input) {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            //in = Properties.class.getResourceAsStream(propFile);
-            in = new FileInputStream(propFile);
-            try {
-                properties.load(in);
-            } catch (IOException ex) {
-                Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                out = new FileOutputStream(propFile);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 }

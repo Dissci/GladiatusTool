@@ -33,12 +33,12 @@ public class GladiatusTool {
 LoginFrame frame = new LoginFrame();
 frame.setVisible(true);
         
-//        System.setProperty("webdriver.firefox.driver", "‪C:/Program Files/Mozilla Firefox/firefox.exe");
-//        System.setProperty("webdriver.gecko.driver", "C:/Users/Tomáš/Downloads/geckodriver-v0.21.0-win64/geckodriver.exe");
+
 //        WebDriver driver = new FirefoxDriver();
 //        driver.manage().window().maximize();
 //        driver.get("https://sk.gladiatus.gameforge.com/game/");
 //        Thread.sleep(1000);
+
 //        WebElement user = driver.findElement(By.id("login_username"));
 //        WebElement password = driver.findElement(By.id("login_password"));
 //        user.sendKeys("Papa");
