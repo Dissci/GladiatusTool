@@ -5,6 +5,7 @@
  */
 package gladiatustool.manager;
 
+import java.util.Random;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -15,9 +16,12 @@ public abstract class Manager {
 
     protected Long lag;
     protected WebDriver driver;
+    protected Random rndLag;
 
-    public Manager(WebDriver driver) {
+    public Manager(WebDriver driver, Long lag) {
         this.driver = driver;
+        this.lag = lag;
+        this.rndLag = new Random(lag);
     }
 
     public WebDriver getDriver() {
@@ -34,5 +38,9 @@ public abstract class Manager {
 
     public void setLag(Long lag) {
         this.lag = lag;
+    }
+
+    protected long getRandomLag() {
+        return rndLag.nextLong();
     }
 }

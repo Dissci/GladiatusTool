@@ -21,7 +21,7 @@ public class LoginManager extends Manager {
     private int indexServer;
 
     LoginManager(UserConfiguration userConfiguration, WebDriver driver, int indexServer) {
-        super(driver);
+        super(driver, 300000L);
         this.userConfiguration = userConfiguration;
         this.indexServer = indexServer;
     }
@@ -34,11 +34,12 @@ public class LoginManager extends Manager {
         password.sendKeys(userConfiguration.getPassword());
         Select selectBox = new Select(driver.findElement(By.id("login_server")));
         selectBox.selectByIndex(indexServer);
+        WebElement submit = driver.findElement(By.id("loginsubmit"));
+        submit.click();
     }
 
     @Override
     public Message getPlan() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }
