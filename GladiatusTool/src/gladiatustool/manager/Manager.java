@@ -16,7 +16,7 @@ public abstract class Manager {
 
     protected Long lag;
     protected WebDriver driver;
-    protected Random rndLag;    
+    protected Random rndLag;
 
     public Manager(WebDriver driver, Long lag) {
         this.driver = driver;
@@ -42,5 +42,16 @@ public abstract class Manager {
 
     protected long getRandomLag() {
         return rndLag.nextLong();
+    }
+
+    protected long calculateNextExecute(String cooldown) {        
+        StringBuilder builder = new StringBuilder(cooldown);
+        String seconds = builder.substring(builder.indexOf(":") + 1);
+        String minutes = builder.substring(0, builder.indexOf(":"));
+        Long time = System.currentTimeMillis();
+        time += Long.getLong(minutes, 10) * 60000;
+        time += Long.getLong(seconds, 10) * 1000;
+        time += getRandomLag();
+        return time;
     }
 }

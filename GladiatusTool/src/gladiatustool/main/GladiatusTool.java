@@ -30,15 +30,13 @@ public class GladiatusTool {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-LoginFrame frame = new LoginFrame();
-frame.setVisible(true);
-        
+        LoginFrame frame = new LoginFrame();
+        frame.setVisible(true);
 
 //        WebDriver driver = new FirefoxDriver();
 //        driver.manage().window().maximize();
 //        driver.get("https://sk.gladiatus.gameforge.com/game/");
 //        Thread.sleep(1000);
-
 //        WebElement user = driver.findElement(By.id("login_username"));
 //        WebElement password = driver.findElement(By.id("login_password"));
 //        user.sendKeys("Papa");
