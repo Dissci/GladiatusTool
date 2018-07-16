@@ -5,8 +5,12 @@
  */
 package gladiatustool.jFrame;
 
-import gladiatustool.manager.LoginManager;
+import gladiatustool.DriverConfiguration;
+import gladiatustool.UserConfiguration;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,8 +21,9 @@ public class LoginFrame extends javax.swing.JFrame {
     /**
      * Creates new form LoginFrame
      */
-    private final LoginManager log = new LoginManager();
-    
+    private final UserConfiguration userConfiguration = new UserConfiguration();
+    private final DriverConfiguration driverConfiguration = new DriverConfiguration();
+
     public LoginFrame() {
         initComponents();
         init();
@@ -26,20 +31,29 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void init() {
-        userName.setText(log.getUser());
-        password.setText(log.getPassword());
-        expeditions.setSelected(log.isExpeditions());
-        dungeons.setSelected(log.isDungeons());
+        userName.setText(userConfiguration.getUser());
+        password.setText(userConfiguration.getPassword());
+        expeditions.setSelected(userConfiguration.isExpeditions());
+        dungeons.setSelected(userConfiguration.isDungeons());
     }
-    
-    private void initServerList(){
+
+    private void initServerList() {
         serverList.removeAllItems();
-        List<String> servers = log.getServerList();
+        List<String> servers = driverConfiguration.loadServersFromURL();
         for (String server : servers) {
             serverList.addItem(server);
         }
+
+        String server = userConfiguration.getServer();
+        if (!server.isEmpty()) {
+            serverList.setSelectedItem(server);
+        }
     }
-    
+
+    private void saveConfig() throws IOException {
+        userConfiguration.setUserConfig(userName.getText(), password.getText(), serverList.getSelectedItem().toString(), expeditions.isSelected(), dungeons.isSelected());        
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,6 +92,11 @@ public class LoginFrame extends javax.swing.JFrame {
         dungeons.setText("Dungeons");
 
         saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,6 +149,14 @@ public class LoginFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        try {
+            saveConfig();
+        } catch (IOException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     /**
      * @param args the command line arguments
