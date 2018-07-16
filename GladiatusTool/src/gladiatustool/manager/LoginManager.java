@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool;
+package gladiatustool.manager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import org.jsoup.nodes.Element;
  *
  * @author Tomáš
  */
-public class Login {
+public class LoginManager {
 
     private final Properties properties = new Properties();
     private final String propertiesName = "properties.properties";
@@ -39,7 +39,7 @@ public class Login {
     private String URL;
     
 
-    public Login() {
+    public LoginManager() {
         init();
     }
 
@@ -49,7 +49,7 @@ public class Login {
             properties.load(in);
             readData();
         } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         loadServersFromURL();
     }
@@ -93,9 +93,9 @@ public class Login {
                 }
             }
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool;
+package gladiatustool.manager;
 
 /**
  *
  * @author Tomáš
  */
-public class Dungeon {
+public class ExpeditionManager {
     
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool;
+package gladiatustool.jFrame;
 
+import gladiatustool.manager.LoginManager;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class LoginFrame extends javax.swing.JFrame {
     /**
      * Creates new form LoginFrame
      */
-    private final Login log = new Login();
+    private final LoginManager log = new LoginManager();
     
     public LoginFrame() {
         initComponents();
