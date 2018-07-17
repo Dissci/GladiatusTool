@@ -9,7 +9,6 @@ import gladiatustool.core.Core;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import org.openqa.selenium.WebElement;
 
 /**
