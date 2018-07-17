@@ -12,10 +12,13 @@ import gladiatustool.manager.LoginManager;
 import gladiatustool.manager.Message;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -74,9 +77,22 @@ public class Core implements Runnable {
         queue.add(msg1);
     }
 
+    private void checkNotification() {
+        try {
+            WebElement element = DRIVER.findElement(By.id("blackoutDialognotification"));
+            element.findElement(By.className("awesome-button")).click();
+
+        } catch (Throwable e) {
+
+        }
+    }
+
     private void start() {
         initBeforeStart();
         while (true) {
+
+            checkNotification();
+            
             try {
                 executeMessage();
             } catch (Throwable e) {
@@ -102,6 +118,7 @@ public class Core implements Runnable {
 //awesome-button big toto je ako class pre novy lvl a rovnako ako aj linkloginbonus
 //linknotification
     //linkcancelsoulboundConfirm
+
     private void sleepCore() {
         Thread th = new Thread();
         try {
