@@ -81,7 +81,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private void saveConfig() throws IOException {
         userConfiguration.setUserConfig(userName.getText(), password.getText(), serverList.getSelectedItem().toString(), expeditions.isSelected(), dungeons.isSelected());
         if (checkBrowserPath()) {
-            driverConfiguration.setDriverConfig(browserPath.getText(), "en");
+            driverConfiguration.setDriverConfig(browserPath.getText(), "sk");
         }
     }
 

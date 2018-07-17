@@ -63,7 +63,7 @@ public class Core implements Runnable {
         }
         DRIVER.manage().window().maximize();
         LOGON_URL = "https:" + url;
-        DRIVER.get(LOGON_URL);
+        DRIVER.get(LOGON_URL); //tu pridat exception
     }
 
     private void initBeforeStart() {
@@ -98,7 +98,10 @@ public class Core implements Runnable {
             }
         }
     }
-
+//linkLoginBonus   
+//awesome-button big toto je ako class pre novy lvl a rovnako ako aj linkloginbonus
+//linknotification
+    //linkcancelsoulboundConfirm
     private void sleepCore() {
         Thread th = new Thread();
         try {
