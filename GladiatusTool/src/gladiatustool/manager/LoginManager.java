@@ -30,12 +30,19 @@ public class LoginManager extends Manager {
         WebElement webElement = Core.DRIVER.findElement(By.id(element));
         webElement.sendKeys(text);
     }
-    
+
     @Override
     public void execute() {
+        try {
+            WebElement element = Core.DRIVER.findElement(By.className("openX_interstitial"));
+            element.findElement(By.tagName("a")).click();
+        } catch (Throwable e) {
+
+        }
+
         fillTheField("login_username", userConfiguration.getUser());
         fillTheField("login_password", userConfiguration.getPassword());
-              
+
         Select selectBox = new Select(Core.DRIVER.findElement(By.id("login_server")));
         selectBox.selectByIndex(indexServer);
         click(Core.DRIVER.findElement(By.id("loginsubmit")));
