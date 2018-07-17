@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -41,10 +42,17 @@ public class LoginFrame extends javax.swing.JFrame {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         initComponents();
+        this.setTitle("Gladiatus Tool");
+        //loadImageIcon();
         init();
         initServerList();
     }
 
+    private void loadImageIcon() {
+        ImageIcon img = new ImageIcon("img/icon.jpg");
+        this.setIconImage(img.getImage());
+    }
+    
     private void init() {
         userName.setText(userConfiguration.getUser());
         password.setText(userConfiguration.getPassword());
@@ -103,10 +111,10 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void start() {
         if (checkBrowserPath()) {
-            core = new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
+            Thread thread = new Thread(new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
                     driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
-                    getExpeditionEnemy(), getDungeonMode(), getLag());
-            core.run();
+                    getExpeditionEnemy(), getDungeonMode(), getLag()));
+            thread.start();
         }
     }
 

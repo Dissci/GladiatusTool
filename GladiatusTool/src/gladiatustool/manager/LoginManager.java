@@ -8,7 +8,6 @@ package gladiatustool.manager;
 import gladiatustool.configuration.UserConfiguration;
 import gladiatustool.core.Core;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -27,16 +26,20 @@ public class LoginManager extends Manager {
         this.indexServer = indexServer;
     }
 
+    private void fillTheField(String element, String text) {
+        WebElement webElement = Core.DRIVER.findElement(By.id(element));
+        webElement.sendKeys(text);
+    }
+    
     @Override
     public void execute() {
-        WebElement user = Core.DRIVER.findElement(By.id("login_username"));
-        WebElement password = Core.DRIVER.findElement(By.id("login_password"));
-        user.sendKeys(userConfiguration.getUser());
-        password.sendKeys(userConfiguration.getPassword());
+        fillTheField("login_username", userConfiguration.getUser());
+        fillTheField("login_password", userConfiguration.getPassword());
+              
         Select selectBox = new Select(Core.DRIVER.findElement(By.id("login_server")));
         selectBox.selectByIndex(indexServer);
-        WebElement submit = Core.DRIVER.findElement(By.id("loginsubmit"));
-        submit.click();
+        click(Core.DRIVER.findElement(By.id("loginsubmit")));
+        Core.OVERVIEW_URL = Core.DRIVER.getCurrentUrl();
     }
 
     @Override

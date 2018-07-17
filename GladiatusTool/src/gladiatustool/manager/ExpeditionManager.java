@@ -34,7 +34,7 @@ public class ExpeditionManager extends Manager {
             click(expedition);
             WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
             List<WebElement> listt = attack.findElements(By.className("expedition_box"));
-            click(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
+            attack(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
         } catch (Throwable e) {
 
         }
@@ -44,7 +44,7 @@ public class ExpeditionManager extends Manager {
     public Message getPlan() {
         Thread th = new Thread();
         try {
-            th.sleep(500);
+            th.sleep(1000);
             WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
             String time = cooldown_bar.getText();
             Long cooldown = calculateNextExecute(time);

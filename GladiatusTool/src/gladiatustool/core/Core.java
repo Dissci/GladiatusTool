@@ -27,6 +27,8 @@ public class Core implements Runnable {
 
     private final PriorityQueue<Message> queue;
     public static WebDriver DRIVER;
+    public static String OVERVIEW_URL;
+    public static String LOGON_URL;
     private final long sleepTime = 1000;
     private final LoginManager login;
     private final DungeonManager dungeonManager;
@@ -56,12 +58,12 @@ public class Core implements Runnable {
             DRIVER = new FirefoxDriver();
         }
         DRIVER.manage().window().maximize();
-        DRIVER.get("https:" + url);
+        LOGON_URL = "https:" + url;
+        DRIVER.get(LOGON_URL);
     }
 
     private void initBeforeStart() {
         login.execute();
-
         Message msg = expeditionManager.getPlan();
         queue.add(msg);
         Message msg1 = dungeonManager.getPlan();
@@ -71,16 +73,17 @@ public class Core implements Runnable {
     private void start() {
         initBeforeStart();
         while (true) {
-
-            executeMessage();
-
+            try {
+                executeMessage();
+            } catch (Throwable e) {
+                DRIVER.get(LOGON_URL);
+                login.execute();
+            }
             sleepCore();
         }
     }
 
     private void executeMessage() {
-        Date date = new Date(queue.peek().getExecuteTime());
-        Date date1 = new Date(System.currentTimeMillis());
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             Message msg = queue.poll();
             msg.execute();

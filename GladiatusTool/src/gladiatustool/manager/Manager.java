@@ -5,9 +5,11 @@
  */
 package gladiatustool.manager;
 
+import gladiatustool.core.Core;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -37,7 +39,10 @@ public abstract class Manager {
     }
 
     protected long getRandomLag() {
-        return 0L;//rndLag.nextInt((int) lag);
+        //int pomLag = ((int) lag * 1000);
+        //long lagger = (long) rndLag.nextInt(pomLag);
+        //return lagger;
+        return 0L;
     }
 
     protected long calculateNextExecute(String cooldown) {
@@ -57,10 +62,25 @@ public abstract class Manager {
     protected void click(WebElement element) {
         Thread th = new Thread();
         try {
-            th.sleep(500);
+            th.sleep(1000);
             element.click();
         } catch (InterruptedException ex) {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    protected void goOnOverview() {
+        Thread th = new Thread();
+        try {
+            th.sleep(1000);
+            Core.DRIVER.get(Core.OVERVIEW_URL);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void attack(WebElement element) {
+        click(element);
+        goOnOverview();
     }
 }

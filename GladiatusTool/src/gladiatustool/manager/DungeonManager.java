@@ -31,34 +31,39 @@ public class DungeonManager extends Manager {
             String button = "dif" + dungeonMode;
             WebElement dungeonOption = Core.DRIVER.findElement(By.name(button));
             click(dungeonOption);
+            attackOnEnemy();
         } catch (Throwable e) {
-            List<WebElement> allImages = Core.DRIVER.findElements(By.tagName("img"));
-            for (WebElement allImage : allImages) {
-                if (allImage.getAttribute("src").contains("combatloc.gif")) {
-                    click(allImage);
-                }
-            }
+            
         }
     }
 
+    private void attackOnEnemy() throws Throwable {
+        List<WebElement> allImages = Core.DRIVER.findElements(By.tagName("img"));
+        for (WebElement allImage : allImages) {
+            if (allImage.getAttribute("src").contains("combatloc.gif")) {
+                attack(allImage);
+                return;
+            }
+        }
+        throw new Throwable();
+    }   
+    
     @Override
     public void execute() {
         WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
         click(dungeon);
-        WebElement enemy;
         try {
-            enemy = Core.DRIVER.findElement(By.className("map_label"));
+           attackOnEnemy();
         } catch (Throwable e) {
-            openDungeon();
-            enemy = Core.DRIVER.findElement(By.className("map_label"));
+            openDungeon();            
         }
-        click(enemy);
     }
 
     @Override
     public Message getPlan() {
+        Thread th = new Thread();
         try {
-            Thread.sleep(500);
+            th.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(DungeonManager.class.getName()).log(Level.SEVERE, null, ex);
         }
