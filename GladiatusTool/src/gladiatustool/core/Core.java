@@ -33,6 +33,8 @@ public class Core implements Runnable {
     private final LoginManager login;
     private final DungeonManager dungeonManager;
     private final ExpeditionManager expeditionManager;
+    private final boolean chrome;
+    private final String url;
 
     public Core(String url, boolean chrome, UserConfiguration userConfiguration, int serverIndex, int expeditionEnemy, int dungeonMode, long lag) {
         initDriver(url, chrome);
@@ -49,6 +51,8 @@ public class Core implements Runnable {
         login = new LoginManager(userConfiguration, serverIndex);
         dungeonManager = new DungeonManager(lag, dungeonMode);
         expeditionManager = new ExpeditionManager(lag, expeditionEnemy);
+        this.chrome = chrome;
+        this.url = url;
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -76,8 +80,9 @@ public class Core implements Runnable {
             try {
                 executeMessage();
             } catch (Throwable e) {
-                DRIVER.get(LOGON_URL);
-                login.execute();
+                DRIVER.close();
+                initDriver(url, chrome);
+                initBeforeStart();
             }
             sleepCore();
         }
