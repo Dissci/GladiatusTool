@@ -8,6 +8,7 @@ package gladiatustool.core;
 import gladiatustool.configuration.UserConfiguration;
 import gladiatustool.manager.DungeonManager;
 import gladiatustool.manager.ExpeditionManager;
+import gladiatustool.manager.HealthManager;
 import gladiatustool.manager.LoginManager;
 import gladiatustool.manager.Message;
 import java.util.Comparator;
@@ -81,18 +82,18 @@ public class Core implements Runnable {
         try {
             WebElement element = DRIVER.findElement(By.id("blackoutDialognotification"));
             element.findElement(By.className("awesome-button")).click();
-
         } catch (Throwable e) {
 
         }
     }
-
+    HealthManager healthManager = new HealthManager(sleepTime);
+    
     private void start() {
         initBeforeStart();
         while (true) {
 
             checkNotification();
-            
+            healthManager.findFood();
             try {
                 executeMessage();
             } catch (Throwable e) {
