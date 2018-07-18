@@ -20,6 +20,12 @@ public class UserConfiguration extends Configuration {
     private String server;
     private boolean expeditions;
     private boolean dungeons;
+    private boolean arena;
+    private boolean turma;
+    private int lag;
+    private int criticalHealthLevel;
+    private int dungeonMode;
+    private int expeditionFocus;
 
     public UserConfiguration() {
         super(true, "userProp.properties");
@@ -40,21 +46,43 @@ public class UserConfiguration extends Configuration {
         setServer(properties.getProperty("server"));
         setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
         setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
+        setArena(Boolean.parseBoolean(properties.getProperty("arena")));
+        setTurma(Boolean.parseBoolean(properties.getProperty("turma")));
+        setCriticalHealthLevel(Integer.parseInt(
+                properties.getProperty("criticalHealthLevel")));
+        setLag(Integer.parseInt(properties.getProperty("lag")));
+        setDugeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
+        setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
     }
 
-    public void setUserConfig(String user, String password, String server, boolean expeditions, boolean dungeons) throws IOException {
+    public void setUserConfig(String user, String password, String server, boolean expeditions, boolean dungeons, boolean arena, boolean turma, int criticalHealthLevel,
+            int lag, int dungeonMode, int expeditionFocus) throws IOException {
+
         setStream(false, FULL_PATH);
         setUser(user);
         setPassword(password);
         setServer(server);
         setExpeditions(expeditions);
         setDungeons(dungeons);
+        setArena(arena);
+        setTurma(turma);
+        setCriticalHealthLevel(criticalHealthLevel);
+        setLag(lag);
+        setDugeonMode(dungeonMode);
+        setExpeditionFocus(expeditionFocus);
 
         properties.setProperty("user", user);
         properties.setProperty("password", password);
         properties.setProperty("server", server);
         properties.setProperty("expeditions", Boolean.toString(expeditions));
         properties.setProperty("dungeons", Boolean.toString(dungeons));
+        properties.setProperty("arena", Boolean.toString(arena));
+        properties.setProperty("turma", Boolean.toString(turma));
+        properties.setProperty("criticalHealthLevel",
+                Integer.toString(criticalHealthLevel));
+        properties.setProperty("lag", Integer.toString(lag));
+        properties.setProperty("dungeonMode", Integer.toString(dungeonMode));
+        properties.setProperty("expeditionFocus", Integer.toString(expeditionFocus));
 
         properties.store(out, null);
         out.close();
@@ -99,4 +127,53 @@ public class UserConfiguration extends Configuration {
     public void setDungeons(boolean dungeons) {
         this.dungeons = dungeons;
     }
+
+    public boolean isArena() {
+        return arena;
+    }
+
+    public void setArena(boolean arena) {
+        this.arena = arena;
+    }
+
+    public boolean isTurma() {
+        return turma;
+    }
+
+    public void setTurma(boolean turma) {
+        this.turma = turma;
+    }
+
+    public int getLag() {
+        return lag;
+    }
+
+    public void setLag(int lag) {
+        this.lag = lag;
+    }
+
+    public int getCriticalHealthLevel() {
+        return criticalHealthLevel;
+    }
+
+    public void setCriticalHealthLevel(int criticalHealthLevel) {
+        this.criticalHealthLevel = criticalHealthLevel;
+    }
+
+    public int getDugeonMode() {
+        return dungeonMode;
+    }
+
+    public void setDugeonMode(int dugeonMode) {
+        this.dungeonMode = dugeonMode;
+    }
+
+    public int getExpeditionFocus() {
+        return expeditionFocus;
+    }
+
+    public void setExpeditionFocus(int expeditionFocus) {
+        this.expeditionFocus = expeditionFocus;
+    }
+
 }

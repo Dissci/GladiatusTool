@@ -52,13 +52,13 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+              <EmptySpace pref="11" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -111,17 +111,9 @@
                                   <Component id="userName" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace pref="177" max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="expeditionOption" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="expeditions" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="dungeons" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="expeditionOption" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lagger" min="-2" pref="63" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="dungeonOption" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -137,15 +129,12 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="userName" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="expeditions" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="expeditionOption" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="dungeons" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                               <Component id="dungeonOption" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                           </Group>
@@ -159,12 +148,7 @@
                                   <Component id="serverList" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lagger" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                              <EmptySpace min="38" pref="135" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -212,82 +196,147 @@
                 <Property name="text" type="java.lang.String" value="Server:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="dungeons">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Dungeons"/>
-              </Properties>
-              <Events>
-                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="dungeonsStateChanged"/>
-              </Events>
-            </Component>
             <Container class="javax.swing.JPanel" name="expeditionOption">
 
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jRadioButton3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jRadioButton4" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jRadioButton5" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="0" pref="174" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jRadioButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton4" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton2">
-                  <Properties>
-                    <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" value="1"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton3">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="2"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton4">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="3"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton5">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="4"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel5">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Which one of the four enemies"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
             </Container>
+            <Container class="javax.swing.JPanel" name="dungeonOption">
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="149" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="93" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel3">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Game settings">
+                <Property name="tabTitle" type="java.lang.String" value="Game settings"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="dungeons" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="expeditions" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jRadioButton3" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jRadioButton4" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jRadioButton5" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="arena" min="-2" max="-2" attributes="0"/>
+                                  <Component id="circuTurma" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jRadioButton7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton6" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="lagger" pref="63" max="32767" attributes="0"/>
+                                  <Component id="criticalHealthLevel" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace pref="118" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="expeditions" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="arena" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jRadioButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton5" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="circuTurma" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="dungeons" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jRadioButton6" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jRadioButton7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="criticalHealthLevel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="lagger" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace pref="41" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
             <Component class="javax.swing.JCheckBox" name="expeditions">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Expeditions"/>
@@ -296,68 +345,87 @@
                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="expeditionsStateChanged"/>
               </Events>
             </Component>
-            <Container class="javax.swing.JPanel" name="dungeonOption">
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton6" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton7" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jRadioButton6" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jRadioButton7" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jLabel6">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Which mode of dungeon"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton6">
-                  <Properties>
-                    <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" value="Normal mode"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton7">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Hard mode"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
+            <Component class="javax.swing.JLabel" name="jLabel5">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Which one of the four enemies"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton4">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="3"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton3">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="2"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton2">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton5">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="4"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="dungeons">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dungeons"/>
+              </Properties>
+              <Events>
+                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="dungeonsStateChanged"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel6">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Which mode of dungeon"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton6">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Normal mode"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="jRadioButton7">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Hard mode"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="arena">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Arena Provinciarum"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="circuTurma">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Circu Turma Provinciarum"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="lagger">
+            </Component>
             <Component class="javax.swing.JLabel" name="jLabel7">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Lag+-(Seconds):"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JSpinner" name="lagger">
+            <Component class="javax.swing.JLabel" name="jLabel8">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Critical Health Level (%):"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="criticalHealthLevel">
             </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Settings">
-                <Property name="tabTitle" type="java.lang.String" value="Settings"/>
+              <JTabbedPaneConstraints tabName="Browser settings">
+                <Property name="tabTitle" type="java.lang.String" value="Browser settings"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

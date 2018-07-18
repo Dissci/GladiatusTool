@@ -33,7 +33,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private final FileFilter filter = new FileNameExtensionFilter("EXE File", "exe");
     private final UserConfiguration userConfiguration = new UserConfiguration();
     private final DriverConfiguration driverConfiguration = new DriverConfiguration();
-    private Core core;
 
     public LoginFrame() {
         try {
@@ -52,7 +51,7 @@ public class LoginFrame extends javax.swing.JFrame {
         ImageIcon img = new ImageIcon("img/icon.jpg");
         this.setIconImage(img.getImage());
     }
-    
+
     private void init() {
         userName.setText(userConfiguration.getUser());
         password.setText(userConfiguration.getPassword());
@@ -79,13 +78,13 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void saveConfig() throws IOException {
-        userConfiguration.setUserConfig(userName.getText(), password.getText(), serverList.getSelectedItem().toString(), expeditions.isSelected(), dungeons.isSelected());
+        userConfiguration.setUserConfig(userName.getText(), password.getText(), serverList.getSelectedItem().toString(), expeditions.isSelected(), dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(), getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus());
         if (checkBrowserPath()) {
             driverConfiguration.setDriverConfig(browserPath.getText(), "sk");
         }
     }
 
-    private int getExpeditionEnemy() {
+    private int getExpeditionFocus() {
         if (jRadioButton2.isSelected()) {
             return 0;
         } else if (jRadioButton3.isSelected()) {
@@ -105,15 +104,23 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }
 
-    private Long getLag() {
-        return Long.getLong(lagger.getValue().toString(), 10) * 60000;
+    private int getLag() {
+        return Integer.parseInt(lagger.getValue().toString());
     }
 
-    private void start() {
+    private int getCriticalHealthLevel() {
+        return Integer.parseInt(criticalHealthLevel.getValue().toString());
+    }
+
+    private void start() throws IOException {
         if (checkBrowserPath()) {
-            Thread thread = new Thread(new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
-                    driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
-                    getExpeditionEnemy(), getDungeonMode(), getLag()));
+            saveConfig();
+//            Thread thread = new Thread(new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
+//                    driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
+//                    getExpeditionEnemy(), getDungeonMode(), getLag(), userConfiguration.gete));
+
+            Thread thread = new Thread(new Core(userConfiguration,
+                    driverConfiguration));
             thread.start();
         }
     }
@@ -171,20 +178,25 @@ public class LoginFrame extends javax.swing.JFrame {
         userName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        dungeons = new javax.swing.JCheckBox();
         expeditionOption = new javax.swing.JPanel();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jLabel5 = new javax.swing.JLabel();
-        expeditions = new javax.swing.JCheckBox();
         dungeonOption = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        expeditions = new javax.swing.JCheckBox();
+        jLabel5 = new javax.swing.JLabel();
+        jRadioButton4 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton5 = new javax.swing.JRadioButton();
+        dungeons = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
         jRadioButton6 = new javax.swing.JRadioButton();
         jRadioButton7 = new javax.swing.JRadioButton();
-        jLabel7 = new javax.swing.JLabel();
+        arena = new javax.swing.JCheckBox();
+        circuTurma = new javax.swing.JCheckBox();
         lagger = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        criticalHealthLevel = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         browserPath = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -227,93 +239,27 @@ public class LoginFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Server:");
 
-        dungeons.setText("Dungeons");
-        dungeons.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                dungeonsStateChanged(evt);
-            }
-        });
-
-        jRadioButton2.setSelected(true);
-        jRadioButton2.setText("1");
-
-        jRadioButton3.setText("2");
-
-        jRadioButton4.setText("3");
-
-        jRadioButton5.setText("4");
-
-        jLabel5.setText("Which one of the four enemies");
-
         javax.swing.GroupLayout expeditionOptionLayout = new javax.swing.GroupLayout(expeditionOption);
         expeditionOption.setLayout(expeditionOptionLayout);
         expeditionOptionLayout.setHorizontalGroup(
             expeditionOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(expeditionOptionLayout.createSequentialGroup()
-                .addGroup(expeditionOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(expeditionOptionLayout.createSequentialGroup()
-                        .addComponent(jRadioButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton5))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGap(0, 174, Short.MAX_VALUE)
         );
         expeditionOptionLayout.setVerticalGroup(
             expeditionOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, expeditionOptionLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(expeditionOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton4)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton5))
-                .addContainerGap())
+            .addGap(0, 62, Short.MAX_VALUE)
         );
-
-        expeditions.setText("Expeditions");
-        expeditions.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                expeditionsStateChanged(evt);
-            }
-        });
-
-        jLabel6.setText("Which mode of dungeon");
-
-        jRadioButton6.setSelected(true);
-        jRadioButton6.setText("Normal mode");
-
-        jRadioButton7.setText("Hard mode");
 
         javax.swing.GroupLayout dungeonOptionLayout = new javax.swing.GroupLayout(dungeonOption);
         dungeonOption.setLayout(dungeonOptionLayout);
         dungeonOptionLayout.setHorizontalGroup(
             dungeonOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dungeonOptionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dungeonOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jRadioButton6)
-                    .addComponent(jRadioButton7))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 149, Short.MAX_VALUE)
         );
         dungeonOptionLayout.setVerticalGroup(
             dungeonOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dungeonOptionLayout.createSequentialGroup()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton7)
-                .addGap(0, 9, Short.MAX_VALUE))
+            .addGap(0, 93, Short.MAX_VALUE)
         );
-
-        jLabel7.setText("Lag+-(Seconds):");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -332,16 +278,9 @@ public class LoginFrame extends javax.swing.JFrame {
                             .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                             .addComponent(userName))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(expeditionOption, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(expeditions, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(dungeons, javax.swing.GroupLayout.Alignment.TRAILING)))
+                        .addComponent(expeditionOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(dungeonOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(23, 23, 23))
         );
@@ -351,15 +290,12 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(expeditions))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(expeditionOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dungeons)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(36, 36, 36)
                         .addComponent(dungeonOption, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(22, 22, 22))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -370,14 +306,130 @@ public class LoginFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(serverList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38))))
+                        .addGap(38, 135, Short.MAX_VALUE))))
         );
 
         jTabbedPane1.addTab("Login", jPanel1);
+
+        expeditions.setText("Expeditions");
+        expeditions.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                expeditionsStateChanged(evt);
+            }
+        });
+
+        jLabel5.setText("Which one of the four enemies");
+
+        jRadioButton4.setText("3");
+
+        jRadioButton3.setText("2");
+
+        jRadioButton2.setSelected(true);
+        jRadioButton2.setText("1");
+
+        jRadioButton5.setText("4");
+
+        dungeons.setText("Dungeons");
+        dungeons.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                dungeonsStateChanged(evt);
+            }
+        });
+
+        jLabel6.setText("Which mode of dungeon");
+
+        jRadioButton6.setSelected(true);
+        jRadioButton6.setText("Normal mode");
+
+        jRadioButton7.setText("Hard mode");
+
+        arena.setText("Arena Provinciarum");
+
+        circuTurma.setText("Circu Turma Provinciarum");
+
+        jLabel7.setText("Lag+-(Seconds):");
+
+        jLabel8.setText("Critical Health Level (%):");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dungeons)
+                    .addComponent(jLabel6)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(expeditions)
+                            .addComponent(jLabel5)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jRadioButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton5)))
+                        .addGap(74, 74, 74)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(arena)
+                            .addComponent(circuTurma)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton7)
+                            .addComponent(jRadioButton6))
+                        .addGap(120, 120, 120)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lagger, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
+                            .addComponent(criticalHealthLevel))))
+                .addContainerGap(118, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(expeditions)
+                    .addComponent(arena))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton2)
+                            .addComponent(jRadioButton3)
+                            .addComponent(jRadioButton4)
+                            .addComponent(jRadioButton5)))
+                    .addComponent(circuTurma))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dungeons)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jRadioButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton7)
+                            .addComponent(jLabel7)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(criticalHealthLevel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Game settings", jPanel3);
 
         jLabel4.setText("Path to browser:");
 
@@ -412,7 +464,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addContainerGap(201, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Settings", jPanel2);
+        jTabbedPane1.addTab("Browser settings", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -431,12 +483,12 @@ public class LoginFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(jButton1))
-                .addGap(15, 15, 15))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         pack();
@@ -451,7 +503,11 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        start();
+        try {
+            start();
+        } catch (IOException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getPathActionPerformed
@@ -502,7 +558,10 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox arena;
     private javax.swing.JTextField browserPath;
+    private javax.swing.JCheckBox circuTurma;
+    private javax.swing.JSpinner criticalHealthLevel;
     private javax.swing.ButtonGroup dungeonGroup;
     private javax.swing.JPanel dungeonOption;
     private javax.swing.JCheckBox dungeons;
@@ -518,8 +577,10 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;

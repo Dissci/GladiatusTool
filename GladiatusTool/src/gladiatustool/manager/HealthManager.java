@@ -8,6 +8,7 @@ package gladiatustool.manager;
 import gladiatustool.core.Core;
 import gladiatustool.core.LowHealthException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,36 +23,29 @@ import org.openqa.selenium.interactions.Actions;
  */
 public class HealthManager extends Manager {
 
-    private final String foodType = "64";
+    private final int criticalHealthLevel;
 
-    public HealthManager(Long lag) {
+    public HealthManager(Long lag, int criticalHealthLevel) {
         super(lag);
+        this.criticalHealthLevel = criticalHealthLevel;
     }
 
-    private void goToOverview() throws Throwable {
-        Core.DRIVER.get(Core.OVERVIEW_URL);
-    }
-
-    public void findFood() {
+    public WebElement getFood() {
         WebElement inventoryBox = Core.DRIVER.findElement(By.className("inventoryBox"));
         List<WebElement> tabs = inventoryBox.findElements(By.className("awesome-tabs"));
+        WebElement food = null;
         for (WebElement tab : tabs) {
-            tab.click();
+            click(tab);
             WebElement inv = Core.DRIVER.findElement(By.id("inv"));
             List<WebElement> items = inv.findElements(By.tagName("div"));
+
             for (WebElement item : items) {
-                try {
-                    if (foodType.equals(item.getAttribute("data-content-type"))) {
-                        String n = item.getAttribute("data-tooltip");
-                        System.out.println(n);
-                    }
-
-                    dragAndDrop(item, Core.DRIVER.findElement(By.className("ui-droppable")));
-                } catch (Throwable e) {
-
+                if (item.getAttribute("class").contains("item-i-7")) {
+                    return item;
                 }
             }
         }
+        return food;
     }
 
     private void dragAndDrop(WebElement dragged, WebElement dropped) {
@@ -65,29 +59,25 @@ public class HealthManager extends Manager {
     }
 
     public void checkHealth() throws LowHealthException {
+        goOnOverview();
         
-        throw new LowHealthException();
-        //inventoryBox 
-        //data-vitality -> zivot
-        //char_leben -> HP
-        // id = inv
-        //class = awesome-tabs
+        String healthText = Core.DRIVER.findElement(By.id("header_values_hp_percent")).getText();
+        int health = Integer.parseInt(healthText);
+        WebElement food = getFood();
+        
+        if (health <= 20 && food == null) {
+            throw new LowHealthException();
+        } else if (health <= criticalHealthLevel) {
+            dragAndDrop(food, Core.DRIVER.findElement(By.className("ui-droppable")));
+        }
     }
 
     @Override
     public void execute() {
-        try {
-            goToOverview();
-
-        } catch (Throwable ex) {
-            Logger.getLogger(HealthManager.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @Override
     public Message getPlan() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }

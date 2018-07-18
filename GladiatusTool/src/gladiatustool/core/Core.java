@@ -5,6 +5,7 @@
  */
 package gladiatustool.core;
 
+import gladiatustool.configuration.DriverConfiguration;
 import gladiatustool.configuration.UserConfiguration;
 import gladiatustool.manager.DungeonManager;
 import gladiatustool.manager.ExpeditionManager;
@@ -29,19 +30,64 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  */
 public class Core implements Runnable {
 
-    private final PriorityQueue<Message> queue;
+    private PriorityQueue<Message> queue;
     public static WebDriver DRIVER;
     public static String OVERVIEW_URL;
     public static String LOGON_URL;
     private final long sleepTime = 1000;
-    private final LoginManager login;
-    private final DungeonManager dungeonManager;
-    private final ExpeditionManager expeditionManager;
-    private final boolean chrome;
-    private final String url;
+    private boolean chrome;
+    private String url;
+    private LoginManager login;
+    private DungeonManager dungeonManager;
+    private ExpeditionManager expeditionManager;
+    private HealthManager healthManager;
+    private boolean expeditionPermition;
+    private boolean dungeonPermition;
+    private boolean arenaPermition;
+    private boolean turmaPermition;
+    private int criticalHealthLevel;
 
-    public Core(String url, boolean chrome, UserConfiguration userConfiguration, int serverIndex, int expeditionEnemy, int dungeonMode, long lag) {
+    public Core(String url, boolean chrome, UserConfiguration userConfiguration,
+            int serverIndex, int expeditionEnemy, int dungeonMode, long lag,
+            boolean expeditionPermition, boolean dungeonPermition, boolean arenaPermition,
+            boolean turmaPermition, int criticalHealthLevel) {
+
         initDriver(url, chrome);
+        initQueue();
+        initManagers(userConfiguration, serverIndex, expeditionEnemy,
+                dungeonMode, lag, criticalHealthLevel);
+        this.chrome = chrome;
+        this.url = url;
+        this.expeditionPermition = expeditionPermition;
+        this.dungeonPermition = dungeonPermition;
+        this.arenaPermition = arenaPermition;
+        this.turmaPermition = turmaPermition;
+        this.criticalHealthLevel = criticalHealthLevel;
+    }
+
+    public Core(UserConfiguration userConfiguration,
+            DriverConfiguration driverConfiguration) {
+
+        initVariables(userConfiguration, driverConfiguration);
+        initDriver(url, chrome);
+        initQueue();
+        initManagers(userConfiguration, serverIndex, userConfiguration.getExpeditionFocus(),
+                userConfiguration.getDugeonMode(), userConfiguration.getLag(), criticalHealthLevel);
+
+    }
+
+    private void initVariables(UserConfiguration userConfiguration,
+            DriverConfiguration driverConfiguration) {
+        this.chrome = driverConfiguration.isIsChrome();
+        this.url = driverConfiguration.getURL();
+        this.expeditionPermition = userConfiguration.isExpeditions();
+        this.dungeonPermition = userConfiguration.isDungeons();
+        this.arenaPermition = userConfiguration.isArena();
+        this.turmaPermition = userConfiguration.isTurma();
+        this.criticalHealthLevel = userConfiguration.getCriticalHealthLevel();
+    }
+
+    private void initQueue() {
         queue = new PriorityQueue<>(new Comparator<Message>() {
             @Override
             public int compare(Message o1, Message o2) {
@@ -52,11 +98,16 @@ public class Core implements Runnable {
                 }
             }
         });
+    }
+
+    private void initManagers(UserConfiguration userConfiguration,
+            int serverIndex, int expeditionEnemy, int dungeonMode, long lag,
+            int criticalHealthLevel) {
+
+        healthManager = new HealthManager(sleepTime, criticalHealthLevel);
         login = new LoginManager(userConfiguration, serverIndex);
-        dungeonManager = new DungeonManager(lag, dungeonMode);
-        expeditionManager = new ExpeditionManager(lag, expeditionEnemy);
-        this.chrome = chrome;
-        this.url = url;
+        dungeonManager = dungeonPermition ? new DungeonManager(lag, dungeonMode) : null;
+        expeditionManager = expeditionPermition ? new ExpeditionManager(lag, expeditionEnemy) : null;
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -72,10 +123,14 @@ public class Core implements Runnable {
 
     private void initBeforeStart() {
         login.execute();
-        Message msg = expeditionManager.getPlan();
-        queue.add(msg);
-        Message msg1 = dungeonManager.getPlan();
-        queue.add(msg1);
+        if (expeditionPermition) {
+            Message msg = expeditionManager.getPlan();
+            queue.add(msg);
+        }
+        if (dungeonPermition) {
+            Message msg1 = dungeonManager.getPlan();
+            queue.add(msg1);
+        }
     }
 
     private void checkNotification() {
@@ -86,19 +141,22 @@ public class Core implements Runnable {
 
         }
     }
-    HealthManager healthManager = new HealthManager(sleepTime);
+
+    private void manageLowHealth() {
+
+    }
 
     private void start() {
         initBeforeStart();
         while (true) {
 
             checkNotification();
-            healthManager.findFood();            
+
             try {
                 healthManager.checkHealth();
                 executeMessage();
             } catch (LowHealthException ex) {
-                DRIVER.close();
+
             } catch (Throwable e) {
                 DRIVER.close();
                 initDriver(url, chrome);
