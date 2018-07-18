@@ -87,15 +87,18 @@ public class Core implements Runnable {
         }
     }
     HealthManager healthManager = new HealthManager(sleepTime);
-    
+
     private void start() {
         initBeforeStart();
         while (true) {
 
             checkNotification();
-            healthManager.findFood();
+            healthManager.findFood();            
             try {
+                healthManager.checkHealth();
                 executeMessage();
+            } catch (LowHealthException ex) {
+                DRIVER.close();
             } catch (Throwable e) {
                 DRIVER.close();
                 initDriver(url, chrome);

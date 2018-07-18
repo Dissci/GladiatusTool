@@ -6,6 +6,7 @@
 package gladiatustool.manager;
 
 import gladiatustool.core.Core;
+import gladiatustool.core.LowHealthException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -63,7 +64,9 @@ public class HealthManager extends Manager {
         dragAndDrop.perform();
     }
 
-    private void checkHealth() {
+    public void checkHealth() throws LowHealthException {
+        
+        throw new LowHealthException();
         //inventoryBox 
         //data-vitality -> zivot
         //char_leben -> HP
