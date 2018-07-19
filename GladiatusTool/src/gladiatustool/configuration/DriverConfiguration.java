@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +35,7 @@ public class DriverConfiguration extends Configuration {
     private boolean isChrome;
     private String LANG;
     private String URL;
+    private Document doc;
 
     public DriverConfiguration(String webDriver) {
         super(true, "configProp.properties");
@@ -104,25 +106,29 @@ public class DriverConfiguration extends Configuration {
         System.setProperty("webdriver.gecko.driver", gecko);
     }
 
-    public List<String> loadServersFromURL() {
+    private Document getHTMLdoc() throws MalformedURLException, IOException {
+        URL address = new URL("https://" + LANG + URL);
+        HttpsURLConnection con = (HttpsURLConnection) address.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder builder = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            builder.append(inputLine);
+        }
+        String html = builder.toString();
+        return doc = Jsoup.parse(html);
+    }
+
+    public List<String> loadListOfServers(String id) {
         List<String> list = new ArrayList();
         try {
-            URL address = new URL("https://" + LANG + URL);
-            HttpsURLConnection con = (HttpsURLConnection) address.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder builder = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                builder.append(inputLine);
-            }
-            String html = builder.toString();
-            Document doc = Jsoup.parse(html);
-            Element element = doc.getElementById("login_server");
+            getHTMLdoc();
+            Element element = doc.getElementById(id);
             List<Element> lis = element.getAllElements();
 
-            for (int i = 0; i < lis.size(); i++) {
-                if (lis.get(i).childNodeSize() == 1) {
-                    list.add(lis.get(i).text());
+            for (Element li : lis) {
+                if (li.childNodeSize() == 1) {
+                    list.add(li.text());
                 }
             }
         } catch (MalformedURLException ex) {
@@ -133,6 +139,23 @@ public class DriverConfiguration extends Configuration {
             System.exit(0);
         }
         return list;
+    }
+
+    public String[][] loadListOfLanguages(String id) {
+        Element element = doc.getElementById(id);
+        List<Element> lis = element.getElementsByTag("a");
+        String[][] list = new String[lis.size()][2];
+
+        for (int i = 0; i < lis.size(); i++) {
+            list[i][1] = lis.get(i).text();
+            list[i][0] = substLangFromURL(lis.get(i));
+        }
+        return list;
+    }
+
+    private String substLangFromURL(Element element) {
+        StringBuilder builder = new StringBuilder(element.attr("href"));
+        return builder.substring(2, builder.indexOf("."));
     }
 
     public String getWebDriver() {

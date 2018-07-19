@@ -67,7 +67,7 @@ public class Core implements Runnable {
             DriverConfiguration driverConfiguration) {
 
         initVariables(userConfiguration, driverConfiguration);
-        initDriver(url, chrome);
+        initDriver(driverConfiguration.getLANG() + driverConfiguration.getURL(), driverConfiguration.isIsChrome());
         initQueue();
         initManagers(userConfiguration, userConfiguration.getServerIndex(), userConfiguration.getExpeditionFocus(),
                 userConfiguration.getDungeonMode(), userConfiguration.getLag(), criticalHealthLevel);

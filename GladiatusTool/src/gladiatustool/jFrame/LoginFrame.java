@@ -33,18 +33,28 @@ public class LoginFrame extends javax.swing.JFrame {
     private final FileFilter filter = new FileNameExtensionFilter("EXE File", "exe");
     private final UserConfiguration userConfiguration = new UserConfiguration();
     private final DriverConfiguration driverConfiguration = new DriverConfiguration();
+    private String[][] languages;
+    private boolean initializedLang = false;
 
     public LoginFrame() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         initComponents();
         this.setTitle("Gladiatus Tool");
         //loadImageIcon();
         init();
         initServerList();
+        initLanguageList();
     }
 
     private void loadImageIcon() {
@@ -58,19 +68,57 @@ public class LoginFrame extends javax.swing.JFrame {
         expeditions.setSelected(userConfiguration.isExpeditions());
         dungeons.setSelected(userConfiguration.isDungeons());
         browserPath.setText(driverConfiguration.getWebDriver());
+        arena.setSelected(userConfiguration.isArena());
+        circuTurma.setSelected(userConfiguration.isTurma());
+        criticalHealthLevel.setValue(userConfiguration.getCriticalHealthLevel());
+        lagger.setValue(userConfiguration.getLag());
+        setDungeonMode(userConfiguration.getDungeonMode());
+        setExpeditionFocus(userConfiguration.getExpeditionFocus());        
     }
 
     private void initServerList() {
         serverList.removeAllItems();
-        List<String> servers = driverConfiguration.loadServersFromURL();
+        List<String> servers = driverConfiguration.loadListOfServers("login_server");
         for (String server : servers) {
             serverList.addItem(server);
         }
 
         String server = userConfiguration.getServer();
-        if (!server.isEmpty()) {
+        if (!server.isEmpty() || server != null) {
             serverList.setSelectedItem(server);
         }
+    }
+
+    private void initLanguageList() {
+        language.removeAllItems();
+        languages = driverConfiguration.loadListOfLanguages("mmoList1");
+        for (int i = 0; i < languages.length; i++) {
+            language.addItem(languages[i][1]);
+        }
+
+        String shortText = driverConfiguration.getLANG();
+        if (!shortText.isEmpty() || shortText != null) {
+            language.setSelectedItem(getLangFromShort(shortText));
+        }
+        initializedLang = true;
+    }
+
+    private String getLangFromShort(String shortText) {
+        for (int i = 0; i < languages.length; i++) {
+            if (languages[i][0].equals(shortText)) {
+                return languages[i][1];
+            }
+        }
+        throw new NullPointerException();
+    }
+
+    private String getShortFromLang(String lang) {
+        for (int i = 0; i < languages.length; i++) {
+            if (languages[i][1].equals(lang)) {
+                return languages[i][0];
+            }
+        }
+        throw new NullPointerException();
     }
 
     public int getServerIndex() {
@@ -83,10 +131,13 @@ public class LoginFrame extends javax.swing.JFrame {
                 dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(),
                 getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
         if (checkBrowserPath()) {
-            driverConfiguration.setDriverConfig(browserPath.getText(), "sk");
+            driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
         }
     }
 
+//    private String getLanguageShort() {
+//        language.getSelectedItem().toString();
+//    }
     private int getExpeditionFocus() {
         if (jRadioButton2.isSelected()) {
             return 0;
@@ -99,11 +150,35 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }
 
+    private void setExpeditionFocus(int focus) {
+        switch (focus) {
+            case 0:
+                jRadioButton2.setSelected(true);
+                break;
+            case 1:
+                jRadioButton3.setSelected(true);
+                break;
+            case 2:
+                jRadioButton4.setSelected(true);
+                break;
+            case 3:
+                jRadioButton5.setSelected(true);
+                break;
+            default:
+                jRadioButton2.setSelected(true);
+                break;
+        }        
+    }
+
     private int getDungeonMode() {
-        if (jRadioButton6.isSelected()) {
-            return 1;
+        return jRadioButton6.isSelected() ? 1 : 2;
+    }
+
+    private void setDungeonMode(int mode) {
+        if (mode == 1) {
+            jRadioButton6.setSelected(true);
         } else {
-            return 2;
+            jRadioButton7.setSelected(true);
         }
     }
 
@@ -158,6 +233,13 @@ public class LoginFrame extends javax.swing.JFrame {
         jRadioButton7.setEnabled(enabled);
     }
 
+    private void languageStateChange() {
+        if (driverConfiguration != null && language != null && initializedLang) {
+            driverConfiguration.setLANG(getShortFromLang(language.getSelectedItem().toString()));
+            initServerList();
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -179,6 +261,8 @@ public class LoginFrame extends javax.swing.JFrame {
         userName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        language = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         expeditions = new javax.swing.JCheckBox();
         dungeons = new javax.swing.JCheckBox();
@@ -240,25 +324,41 @@ public class LoginFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Server:");
 
+        jLabel9.setText("Language:");
+
+        language.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        language.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                languageItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(serverList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                    .addComponent(userName))
-                .addContainerGap(374, Short.MAX_VALUE))
+                    .addComponent(password)
+                    .addComponent(userName, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                    .addComponent(language, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(368, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(language, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -267,11 +367,11 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(serverList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addGap(38, 135, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Login", jPanel1);
@@ -383,9 +483,6 @@ public class LoginFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(dungeons)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -406,7 +503,10 @@ public class LoginFrame extends javax.swing.JFrame {
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lagger)
                                     .addComponent(criticalHealthLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(dungeons)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,11 +533,11 @@ public class LoginFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lagger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(14, 14, 14)
                         .addComponent(dungeons)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dungeonOption, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Game settings", jPanel3);
@@ -472,7 +572,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addComponent(browserPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(getPath))
-                .addContainerGap(201, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Browser settings", jPanel2);
@@ -499,7 +599,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(jButton1))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -536,6 +636,10 @@ public class LoginFrame extends javax.swing.JFrame {
     private void expeditionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expeditionsActionPerformed
 
     }//GEN-LAST:event_expeditionsActionPerformed
+
+    private void languageItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_languageItemStateChanged
+        languageStateChange();
+    }//GEN-LAST:event_languageItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -593,6 +697,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -604,6 +709,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JSpinner lagger;
+    private javax.swing.JComboBox<String> language;
     private javax.swing.JTextField password;
     private javax.swing.JButton saveButton;
     private javax.swing.JComboBox<String> serverList;
