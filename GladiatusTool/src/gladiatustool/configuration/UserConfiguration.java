@@ -26,6 +26,7 @@ public class UserConfiguration extends Configuration {
     private int criticalHealthLevel;
     private int dungeonMode;
     private int expeditionFocus;
+    private int serverIndex;
 
     public UserConfiguration() {
         super(true, "userProp.properties");
@@ -51,12 +52,14 @@ public class UserConfiguration extends Configuration {
         setCriticalHealthLevel(Integer.parseInt(
                 properties.getProperty("criticalHealthLevel")));
         setLag(Integer.parseInt(properties.getProperty("lag")));
-        setDugeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
+        setDungeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
         setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
     }
 
-    public void setUserConfig(String user, String password, String server, boolean expeditions, boolean dungeons, boolean arena, boolean turma, int criticalHealthLevel,
-            int lag, int dungeonMode, int expeditionFocus) throws IOException {
+    public void setUserConfig(String user, String password, String server, 
+            boolean expeditions, boolean dungeons, boolean arena, boolean turma, 
+            int criticalHealthLevel, int lag, int dungeonMode, int expeditionFocus,
+            int serverIndex) throws IOException {
 
         setStream(false, FULL_PATH);
         setUser(user);
@@ -68,8 +71,9 @@ public class UserConfiguration extends Configuration {
         setTurma(turma);
         setCriticalHealthLevel(criticalHealthLevel);
         setLag(lag);
-        setDugeonMode(dungeonMode);
+        setDungeonMode(dungeonMode);
         setExpeditionFocus(expeditionFocus);
+        setServerIndex(serverIndex);
 
         properties.setProperty("user", user);
         properties.setProperty("password", password);
@@ -160,14 +164,6 @@ public class UserConfiguration extends Configuration {
         this.criticalHealthLevel = criticalHealthLevel;
     }
 
-    public int getDugeonMode() {
-        return dungeonMode;
-    }
-
-    public void setDugeonMode(int dugeonMode) {
-        this.dungeonMode = dugeonMode;
-    }
-
     public int getExpeditionFocus() {
         return expeditionFocus;
     }
@@ -176,4 +172,19 @@ public class UserConfiguration extends Configuration {
         this.expeditionFocus = expeditionFocus;
     }
 
+    public int getDungeonMode() {
+        return dungeonMode;
+    }
+
+    public void setDungeonMode(int dungeonMode) {
+        this.dungeonMode = dungeonMode;
+    }
+
+    public int getServerIndex() {
+        return serverIndex;
+    }
+
+    public void setServerIndex(int serverIndex) {
+        this.serverIndex = serverIndex;
+    }
 }

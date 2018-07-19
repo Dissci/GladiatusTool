@@ -13,8 +13,6 @@ import gladiatustool.manager.HealthManager;
 import gladiatustool.manager.LoginManager;
 import gladiatustool.manager.Message;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,8 +69,8 @@ public class Core implements Runnable {
         initVariables(userConfiguration, driverConfiguration);
         initDriver(url, chrome);
         initQueue();
-        initManagers(userConfiguration, serverIndex, userConfiguration.getExpeditionFocus(),
-                userConfiguration.getDugeonMode(), userConfiguration.getLag(), criticalHealthLevel);
+        initManagers(userConfiguration, userConfiguration.getServerIndex(), userConfiguration.getExpeditionFocus(),
+                userConfiguration.getDungeonMode(), userConfiguration.getLag(), criticalHealthLevel);
 
     }
 
