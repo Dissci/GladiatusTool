@@ -133,14 +133,11 @@ public class Core implements Runnable {
             checkNotification();
 
             try {
-                // healthManager.checkHealth();
+                healthManager.checkHealth();
                 executeMessage();
-                // } catch (LowHealthException ex) {
-
-            } catch (Throwable e) {
+            } catch (LowHealthException ex) {
                 DRIVER.close();
-                initDriver(url, chrome);
-                initBeforeStart();
+                System.exit(0);
             }
             sleepCore();
         }
@@ -149,10 +146,16 @@ public class Core implements Runnable {
     private void executeMessage() {
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             Message msg = queue.poll();
-            msg.execute();
-            Message newMSG = msg.getPlan();
-            if (newMSG != null) {
-                queue.add(newMSG);
+            try {
+                msg.execute();
+                Message newMSG = msg.getPlan();
+                if (newMSG != null) {
+                    queue.add(newMSG);
+                }
+            } catch (Throwable e) {
+                DRIVER.close();
+                initDriver(url, chrome);
+                initBeforeStart();
             }
         }
     }

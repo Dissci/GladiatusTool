@@ -58,17 +58,23 @@ public class HealthManager extends Manager {
         dragAndDrop.perform();
     }
 
-    public void checkHealth() throws LowHealthException {
-        goOnOverview();
-        
+    private int getCurrentHealth() {
+
         String healthText = Core.DRIVER.findElement(By.id("header_values_hp_percent")).getText();
-        int health = Integer.parseInt(healthText);
-        WebElement food = getFood();
-        
-        if (health <= 20 && food == null) {
-            throw new LowHealthException();
-        } else if (health <= criticalHealthLevel) {
-            dragAndDrop(food, Core.DRIVER.findElement(By.className("ui-droppable")));
+        return Integer.parseInt(healthText.replace("%", ""));
+    }
+
+    public void checkHealth() throws LowHealthException {
+        int health = getCurrentHealth();
+        if (health <= criticalHealthLevel) {
+            goOnOverview();
+            WebElement food = getFood();
+
+            if (health <= criticalHealthLevel && food == null) {
+                throw new LowHealthException();
+            } else if (health <= criticalHealthLevel) {
+                dragAndDrop(food, Core.DRIVER.findElement(By.className("ui-droppable")));
+            }
         }
     }
 
