@@ -34,9 +34,10 @@ public class ExpeditionManager extends Manager {
             click(expedition);
             WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
             List<WebElement> listt = attack.findElements(By.className("expedition_box"));
+            listt.get(indexOfExpedition).findElement(By.className("expedition_cooldown_reduce"));
             attack(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
         } catch (Throwable e) {
-
+            System.out.println("Rubin expedition catch");
         }
     }
 

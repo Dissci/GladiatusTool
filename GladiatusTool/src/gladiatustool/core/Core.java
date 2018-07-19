@@ -45,24 +45,6 @@ public class Core implements Runnable {
     private boolean turmaPermition;
     private int criticalHealthLevel;
 
-    public Core(String url, boolean chrome, UserConfiguration userConfiguration,
-            int serverIndex, int expeditionEnemy, int dungeonMode, long lag,
-            boolean expeditionPermition, boolean dungeonPermition, boolean arenaPermition,
-            boolean turmaPermition, int criticalHealthLevel) {
-
-        initDriver(url, chrome);
-        initQueue();
-        initManagers(userConfiguration, serverIndex, expeditionEnemy,
-                dungeonMode, lag, criticalHealthLevel);
-        this.chrome = chrome;
-        this.url = url;
-        this.expeditionPermition = expeditionPermition;
-        this.dungeonPermition = dungeonPermition;
-        this.arenaPermition = arenaPermition;
-        this.turmaPermition = turmaPermition;
-        this.criticalHealthLevel = criticalHealthLevel;
-    }
-
     public Core(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
 
@@ -77,7 +59,7 @@ public class Core implements Runnable {
     private void initVariables(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
         this.chrome = driverConfiguration.isIsChrome();
-        this.url = driverConfiguration.getURL();
+        this.url = driverConfiguration.getLANG() + driverConfiguration.getURL();
         this.expeditionPermition = userConfiguration.isExpeditions();
         this.dungeonPermition = userConfiguration.isDungeons();
         this.arenaPermition = userConfiguration.isArena();
@@ -151,9 +133,9 @@ public class Core implements Runnable {
             checkNotification();
 
             try {
-                healthManager.checkHealth();
+                // healthManager.checkHealth();
                 executeMessage();
-            } catch (LowHealthException ex) {
+                // } catch (LowHealthException ex) {
 
             } catch (Throwable e) {
                 DRIVER.close();

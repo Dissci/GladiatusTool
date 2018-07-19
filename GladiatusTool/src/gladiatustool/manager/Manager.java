@@ -38,10 +38,9 @@ public abstract class Manager {
     }
 
     protected long getRandomLag() {
-        //int pomLag = ((int) lag * 1000);
-        //long lagger = (long) rndLag.nextInt(pomLag);
-        //return lagger;
-        return 0L;
+        int pomLag = ((int) lag * 1000);
+        long lagger = (long) rndLag.nextInt(pomLag);
+        return lagger;       
     }
 
     protected long calculateNextExecute(String cooldown) {

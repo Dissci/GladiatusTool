@@ -73,7 +73,7 @@ public class LoginFrame extends javax.swing.JFrame {
         criticalHealthLevel.setValue(userConfiguration.getCriticalHealthLevel());
         lagger.setValue(userConfiguration.getLag());
         setDungeonMode(userConfiguration.getDungeonMode());
-        setExpeditionFocus(userConfiguration.getExpeditionFocus());        
+        setExpeditionFocus(userConfiguration.getExpeditionFocus());
     }
 
     private void initServerList() {
@@ -167,7 +167,7 @@ public class LoginFrame extends javax.swing.JFrame {
             default:
                 jRadioButton2.setSelected(true);
                 break;
-        }        
+        }
     }
 
     private int getDungeonMode() {
@@ -193,10 +193,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private void start() throws IOException {
         if (checkBrowserPath()) {
             saveConfig();
-//            Thread thread = new Thread(new Core(driverConfiguration.getLANG() + driverConfiguration.getURL(),
-//                    driverConfiguration.isIsChrome(), userConfiguration, getServerIndex(),
-//                    getExpeditionEnemy(), getDungeonMode(), getLag(), userConfiguration.gete));
-
             Thread thread = new Thread(new Core(userConfiguration,
                     driverConfiguration));
             thread.start();
@@ -235,8 +231,11 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void languageStateChange() {
         if (driverConfiguration != null && language != null && initializedLang) {
-            driverConfiguration.setLANG(getShortFromLang(language.getSelectedItem().toString()));
-            initServerList();
+            String shortLang = getShortFromLang(language.getSelectedItem().toString());
+            if (!driverConfiguration.getLANG().equals(shortLang)) {
+                driverConfiguration.setLANG(shortLang);
+                initServerList();
+            }
         }
     }
 
