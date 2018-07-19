@@ -59,8 +59,18 @@ public class HealthManager extends Manager {
     }
 
     private int getCurrentHealth() {
+        List<WebElement> list = Core.DRIVER.findElements(By.id("header_values_hp_percent"));
+        if (list.size() == 0) {
+            goOnOverview();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HealthManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            list = Core.DRIVER.findElements(By.id("header_values_hp_percent"));
+        }
 
-        String healthText = Core.DRIVER.findElement(By.id("header_values_hp_percent")).getText();
+        String healthText = list.get(0).getText();
         return Integer.parseInt(healthText.replace("%", ""));
     }
 

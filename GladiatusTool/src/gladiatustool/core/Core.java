@@ -17,6 +17,7 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -138,6 +139,10 @@ public class Core implements Runnable {
             } catch (LowHealthException ex) {
                 DRIVER.close();
                 System.exit(0);
+            } catch (NoSuchElementException e) {
+                DRIVER.close();
+                initDriver(url, chrome);
+                initBeforeStart();
             }
             sleepCore();
         }
