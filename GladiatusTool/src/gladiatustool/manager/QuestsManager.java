@@ -10,5 +10,9 @@ package gladiatustool.manager;
  * @author krkoska.tomas
  */
 public class QuestsManager {
+    //data-ticker-time-left -> class na timer 
+    // quest_footer_reroll -> id na nove ulohy
+               // awesome-button - class to je child konkretny button
+    
     
 }
