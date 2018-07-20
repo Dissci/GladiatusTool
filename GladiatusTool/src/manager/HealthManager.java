@@ -94,10 +94,7 @@ public class HealthManager extends Manager {
                 }
             }
         } else {
-            if (stoppedPlan) {
                 stoppedPlan = false;
-                checkHealth();
-            }
         }
     }
 
