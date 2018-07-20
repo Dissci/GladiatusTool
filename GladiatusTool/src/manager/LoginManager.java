@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.manager;
+package manager;
 
-import gladiatustool.configuration.UserConfiguration;
-import gladiatustool.core.Core;
+import configuration.UserConfiguration;
+import core.Core;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.configuration;
+package configuration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public abstract class Configuration {
 
     protected final Properties properties = new Properties();
-    protected final String PATH = "src/gladiatustool/properties/";
+    protected final String PATH = "src/properties/";
     protected final String FILE;
     protected final String FULL_PATH;
     protected InputStream in;
@@ -70,5 +70,4 @@ public abstract class Configuration {
             }
         }
     }
-
 }

@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.core;
+package core;
 
-import gladiatustool.configuration.DriverConfiguration;
-import gladiatustool.configuration.UserConfiguration;
-import gladiatustool.manager.DungeonManager;
-import gladiatustool.manager.ExpeditionManager;
-import gladiatustool.manager.HealthManager;
-import gladiatustool.manager.LoginManager;
-import gladiatustool.manager.Message;
+import configuration.DriverConfiguration;
+import configuration.UserConfiguration;
+import manager.DungeonManager;
+import manager.ExpeditionManager;
+import manager.HealthManager;
+import manager.LoginManager;
+import manager.Message;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import manager.ArenaManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -99,19 +100,43 @@ public class Core implements Runnable {
         }
         DRIVER.manage().window().maximize();
         LOGON_URL = "https:" + url;
-        DRIVER.get(LOGON_URL); //tu pridat exception
+        DRIVER.get(LOGON_URL);
+    }
+
+    private void initExpedition() {
+        if (expeditionPermition) {
+            Message msg = expeditionManager.getPlan();
+            if (msg != null) {
+                queue.add(msg);
+            } else {
+                throw new NullPointerException();
+            }
+        }
+    }
+
+    private void initDungeon() {
+        if (dungeonPermition) {
+            Message msg1 = dungeonManager.getPlan();
+            if (msg1 != null) {
+                queue.add(msg1);
+            } else {
+                throw new NullPointerException();
+            }
+        }
+    }
+
+    private void initArena() {
+
+    }
+
+    private void initCircu() {
+
     }
 
     private void initBeforeStart() {
         login.execute();
-        if (expeditionPermition) {
-            Message msg = expeditionManager.getPlan();
-            queue.add(msg);
-        }
-        if (dungeonPermition) {
-            Message msg1 = dungeonManager.getPlan();
-            queue.add(msg1);
-        }
+        initExpedition();
+        initDungeon();
     }
 
     private void checkNotification() {
@@ -123,28 +148,60 @@ public class Core implements Runnable {
         }
     }
 
-    private void manageLowHealth() {
+    private void reload() {
+        DRIVER.close();
+        queue.clear();
+        initDriver(url, chrome);
+        initBeforeStart();
+    }
 
+    private void beforeStart() {
+        try {
+            initBeforeStart();
+        } catch (NullPointerException e) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            reload();
+        }
     }
 
     private void start() {
-        initBeforeStart();
+
+        beforeStart();
+
         while (true) {
 
             checkNotification();
 
             try {
                 healthManager.checkHealth();
+
+                if (!healthManager.isStoppedPlan()) {
+                    initArena();
+                    initExpedition();
+                }
+
                 executeMessage();
             } catch (LowHealthException ex) {
-                DRIVER.close();
-                System.exit(0);
+                takeOffManagers();
             } catch (NoSuchElementException e) {
-                DRIVER.close();
-                initDriver(url, chrome);
-                initBeforeStart();
+                reload();
             }
             sleepCore();
+        }
+    }
+
+    private void takeOffManagers() {
+        healthManager.setStoppedPlan(true);
+
+        for (Message message : queue) {
+            if (message.getManager() instanceof ExpeditionManager
+                    || message.getManager() instanceof DungeonManager) {
+                queue.remove(message);
+            }
         }
     }
 
@@ -164,10 +221,6 @@ public class Core implements Runnable {
             }
         }
     }
-//linkLoginBonus   
-//awesome-button big toto je ako class pre novy lvl a rovnako ako aj linkloginbonus
-//linknotification
-    //linkcancelsoulboundConfirm
 
     private void sleepCore() {
         Thread th = new Thread();

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.configuration;
+package configuration;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -42,22 +42,26 @@ public class UserConfiguration extends Configuration {
     }
 
     private void readUserConfig() throws IOException {
-        setUser(properties.getProperty("user"));
-        setPassword(properties.getProperty("password"));
-        setServer(properties.getProperty("server"));
-        setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
-        setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
-        setArena(Boolean.parseBoolean(properties.getProperty("arena")));
-        setTurma(Boolean.parseBoolean(properties.getProperty("turma")));
-        setCriticalHealthLevel(Integer.parseInt(
-                properties.getProperty("criticalHealthLevel")));
-        setLag(Integer.parseInt(properties.getProperty("lag")));
-        setDungeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
-        setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
+        try {
+            setUser(properties.getProperty("user"));
+            setPassword(properties.getProperty("password"));
+            setServer(properties.getProperty("server"));
+            setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
+            setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
+            setArena(Boolean.parseBoolean(properties.getProperty("arena")));
+            setTurma(Boolean.parseBoolean(properties.getProperty("turma")));
+            setCriticalHealthLevel(Integer.parseInt(
+                    properties.getProperty("criticalHealthLevel")));
+            setLag(Integer.parseInt(properties.getProperty("lag")));
+            setDungeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
+            setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
+        } catch (NumberFormatException e) {
+            
+        }
     }
 
-    public void setUserConfig(String user, String password, String server, 
-            boolean expeditions, boolean dungeons, boolean arena, boolean turma, 
+    public void setUserConfig(String user, String password, String server,
+            boolean expeditions, boolean dungeons, boolean arena, boolean turma,
             int criticalHealthLevel, int lag, int dungeonMode, int expeditionFocus,
             int serverIndex) throws IOException {
 
@@ -92,6 +96,9 @@ public class UserConfiguration extends Configuration {
         out.close();
     }
 
+//    public void checkIfnull() {
+//        if(user == null || user.isEmpty())
+//    }
     public String getUser() {
         return user;
     }

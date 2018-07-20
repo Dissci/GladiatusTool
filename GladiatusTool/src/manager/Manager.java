@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.manager;
+package manager;
 
-import gladiatustool.core.Core;
+import core.Core;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,9 +38,12 @@ public abstract class Manager {
     }
 
     protected long getRandomLag() {
-        int pomLag = ((int) lag * 1000);
-        long lagger = (long) rndLag.nextInt(pomLag);
-        return lagger;       
+        long lagger = 0L;
+        if (lag < 0) {
+            int pomLag = ((int) lag * 1000);
+            lagger = (long) rndLag.nextInt(pomLag);
+        }
+        return lagger;
     }
 
     protected long calculateNextExecute(String cooldown) {

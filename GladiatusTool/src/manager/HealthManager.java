@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gladiatustool.manager;
+package manager;
 
-import gladiatustool.core.Core;
-import gladiatustool.core.LowHealthException;
+import core.Core;
+import core.LowHealthException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
@@ -24,6 +25,7 @@ import org.openqa.selenium.interactions.Actions;
 public class HealthManager extends Manager {
 
     private final int criticalHealthLevel;
+    private boolean stoppedPlan = false;
 
     public HealthManager(Long lag, int criticalHealthLevel) {
         super(lag);
@@ -49,6 +51,7 @@ public class HealthManager extends Manager {
     }
 
     private void dragAndDrop(WebElement dragged, WebElement dropped) {
+        Core.DRIVER.findElement(By.className("charmercpic doll1")).click();
         Actions builder = new Actions(Core.DRIVER);
         Action dragAndDrop = builder.clickAndHold(dragged)
                 .moveToElement(dropped)
@@ -58,9 +61,9 @@ public class HealthManager extends Manager {
         dragAndDrop.perform();
     }
 
-    private int getCurrentHealth() {
+    private int getCurrentHealth() throws NoSuchElementException {
         List<WebElement> list = Core.DRIVER.findElements(By.id("header_values_hp_percent"));
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             goOnOverview();
             try {
                 Thread.sleep(1000);
@@ -68,24 +71,40 @@ public class HealthManager extends Manager {
                 Logger.getLogger(HealthManager.class.getName()).log(Level.SEVERE, null, ex);
             }
             list = Core.DRIVER.findElements(By.id("header_values_hp_percent"));
+            if (list.isEmpty()) {
+                throw new NoSuchElementException("Cant find element");
+            }
         }
 
         String healthText = list.get(0).getText();
         return Integer.parseInt(healthText.replace("%", ""));
     }
 
-    public void checkHealth() throws LowHealthException {
+    public void checkHealth() throws LowHealthException, NoSuchElementException {
         int health = getCurrentHealth();
         if (health <= criticalHealthLevel) {
-            goOnOverview();
-            WebElement food = getFood();
+            if (!stoppedPlan) {
+                goOnOverview();
+                WebElement food = getFood();
 
-            if (health <= criticalHealthLevel && food == null) {
-                throw new LowHealthException();
-            } else if (health <= criticalHealthLevel) {
-                dragAndDrop(food, Core.DRIVER.findElement(By.className("ui-droppable")));
+                if (food == null) {
+                    throw new LowHealthException();
+                } else {
+                    dragAndDrop(food, Core.DRIVER.findElement(By.className("ui-droppable")));
+                }
             }
+        } else {
+            stoppedPlan = false;
+            checkHealth();
         }
+    }
+
+    public boolean isStoppedPlan() {
+        return stoppedPlan;
+    }
+
+    public void setStoppedPlan(boolean stoppedPlan) {
+        this.stoppedPlan = stoppedPlan;
     }
 
     @Override
