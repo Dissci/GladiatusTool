@@ -217,6 +217,7 @@ public class Core implements Runnable {
 
         return healthManager.isStoppedPlan();
     }
+    private boolean wasDeleted = false;
 
     private void executeMessage() {
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
@@ -230,9 +231,14 @@ public class Core implements Runnable {
                         queue.remove(message);
                     }
                 }
+                wasDeleted = true;
                 return;
             } else {
                 msg = queue.poll();
+            }
+            if (wasDeleted) {
+                initExpedition();
+                initArena();
             }
 
             try {
