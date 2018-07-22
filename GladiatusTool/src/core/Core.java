@@ -7,12 +7,14 @@ package core;
 
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
+import java.util.ArrayList;
 import manager.DungeonManager;
 import manager.ExpeditionManager;
 import manager.HealthManager;
 import manager.LoginManager;
 import manager.Message;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +93,7 @@ public class Core implements Runnable {
         login = new LoginManager(userConfiguration, serverIndex);
         dungeonManager = dungeonPermition ? new DungeonManager(lag, dungeonMode) : null;
         expeditionManager = expeditionPermition ? new ExpeditionManager(lag, expeditionEnemy) : null;
-        circuTurmaManager = turmaPermition ? new ArenaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3, userConfiguration) : null;
+        circuTurmaManager = turmaPermition ? new ArenaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3) : null;
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -209,12 +211,13 @@ public class Core implements Runnable {
             boolean lowHealth = manageHeal();
             if (lowHealth) {
                 for (Message message : queue) {
-                    if (!(message.getManager() instanceof ExpeditionManager)
-                            && !(message.getManager() instanceof DungeonManager)) {
+                    if ((message.getManager() instanceof ExpeditionManager)
+                            || (message.getManager() instanceof ArenaManager)) {
                         msg = message;
                         queue.remove(message);
                     }
                 }
+                return;
             } else {
                 msg = queue.poll();
             }

@@ -22,19 +22,13 @@ public class ArenaManager extends Manager {
 
     private final String cooldownBarText;
     private final int numberTab;
-    private int server;
     private final String cooldownBar;
 
-    public ArenaManager(Long lag, String cooldownBarText, String cooldownBar, int numberTab, UserConfiguration userConfiguration) {
+    public ArenaManager(Long lag, String cooldownBarText, String cooldownBar, int numberTab) {
         super(lag);
         this.cooldownBarText = cooldownBarText;
         this.numberTab = numberTab;
         this.cooldownBar = cooldownBar;
-        getServer(userConfiguration);
-    }
-
-    private void getServer(UserConfiguration userConfiguration) {
-        server = Integer.parseInt(userConfiguration.getServer().substring(userConfiguration.getServer().lastIndexOf(" ") + 1));
     }
 
     @Override
@@ -55,17 +49,16 @@ public class ArenaManager extends Manager {
         int higherServer = 0;
         while (i < rows.size()) {
             List<WebElement> columns = rows.get(i).findElements(By.tagName("td"));
-            String server = columns.get(2).getText();
-            int currentServer = Integer.parseInt(server);
+            int currentServer = Integer.parseInt(columns.get(2).getText());
             if (higherServer == currentServer) {
-                String currentLvl = columns.get(1).getText();
-                int currentLevel = Integer.parseInt(currentLvl);
+                int currentLevel = Integer.parseInt(columns.get(1).getText());
                 if (level > currentLevel) {
                     level = currentLevel;
                     attackButton = columns.get(columns.size() - 1);
                 }
             } else if (higherServer < currentServer) {
                 higherServer = currentServer;
+                level = Integer.parseInt(columns.get(1).getText());
                 attackButton = columns.get(columns.size() - 1);
             }
             i++;
