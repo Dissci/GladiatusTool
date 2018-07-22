@@ -19,6 +19,8 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import manager.ArenaManager;
+import manager.CircuTurmaManager;
+import manager.FightManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -48,7 +50,8 @@ public class Core implements Runnable {
     private boolean arenaPermition;
     private boolean turmaPermition;
     private int criticalHealthLevel;
-    private ArenaManager circuTurmaManager;
+    private CircuTurmaManager circuTurmaManager;
+    private ArenaManager arenaManager;
 
     public Core(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
@@ -93,7 +96,9 @@ public class Core implements Runnable {
         login = new LoginManager(userConfiguration, serverIndex);
         dungeonManager = dungeonPermition ? new DungeonManager(lag, dungeonMode) : null;
         expeditionManager = expeditionPermition ? new ExpeditionManager(lag, expeditionEnemy) : null;
-        circuTurmaManager = turmaPermition ? new ArenaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3) : null;
+        circuTurmaManager = turmaPermition ? new CircuTurmaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3, "own3") : null;
+
+        arenaManager = arenaPermition ? new ArenaManager(lag, "cooldown_bar_text_arena", "cooldown_bar_arena", 1, "own2") : null;
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -130,7 +135,14 @@ public class Core implements Runnable {
     }
 
     private void initArena() {
-
+        if (arenaPermition) {
+            Message msg1 = arenaManager.getPlan();
+            if (msg1 != null) {
+                queue.add(msg1);
+            } else {
+                throw new NullPointerException();
+            }
+        }
     }
 
     private void initCircu() {
@@ -149,6 +161,7 @@ public class Core implements Runnable {
         initExpedition();
         initDungeon();
         initCircu();
+        initArena();
     }
 
     private void checkNotification() {

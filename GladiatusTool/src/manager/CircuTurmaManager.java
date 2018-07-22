@@ -9,9 +9,9 @@ package manager;
  *
  * @author Tomáš
  */
-public class ArenaManager extends FightManager {
+public class CircuTurmaManager extends FightManager {
 
-    public ArenaManager(Long lag, String cooldownBarText, String cooldownBar, int numberTab, String own) {
+    public CircuTurmaManager(Long lag, String cooldownBarText, String cooldownBar, int numberTab, String own) {
         super(lag, cooldownBarText, cooldownBar, numberTab, own);
     }
 }
