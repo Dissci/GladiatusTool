@@ -25,7 +25,7 @@ public abstract class Manager {
         this.rndLag = new Random(lag);
     }
 
-    public abstract void execute();
+    public abstract void execute() throws Throwable;
 
     public abstract Message getPlan();
 

@@ -27,7 +27,7 @@ public class Message {
         return executeTime;
     }
 
-    public void execute() {
+    public void execute() throws Throwable {
         manager.execute();
     }
     

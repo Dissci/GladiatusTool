@@ -46,6 +46,7 @@ public class Core implements Runnable {
     private boolean arenaPermition;
     private boolean turmaPermition;
     private int criticalHealthLevel;
+    private ArenaManager circuTurmaManager;
 
     public Core(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
@@ -90,6 +91,7 @@ public class Core implements Runnable {
         login = new LoginManager(userConfiguration, serverIndex);
         dungeonManager = dungeonPermition ? new DungeonManager(lag, dungeonMode) : null;
         expeditionManager = expeditionPermition ? new ExpeditionManager(lag, expeditionEnemy) : null;
+        circuTurmaManager = turmaPermition ? new ArenaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3, userConfiguration) : null;
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -130,13 +132,21 @@ public class Core implements Runnable {
     }
 
     private void initCircu() {
-
+        if (turmaPermition) {
+            Message msg1 = circuTurmaManager.getPlan();
+            if (msg1 != null) {
+                queue.add(msg1);
+            } else {
+                throw new NullPointerException();
+            }
+        }
     }
 
     private void initBeforeStart() {
         login.execute();
         initExpedition();
         initDungeon();
+        initCircu();
     }
 
     private void checkNotification() {
@@ -177,37 +187,38 @@ public class Core implements Runnable {
             checkNotification();
 
             try {
-                healthManager.checkHealth();
-
-                if (!healthManager.isStoppedPlan()) {
-                    initArena();
-                    initExpedition();
-                }
-
                 executeMessage();
-            } catch (LowHealthException ex) {
-                takeOffManagers();
             } catch (NoSuchElementException e) {
+                reload();
+            } catch (NullPointerException ex) {
                 reload();
             }
             sleepCore();
         }
     }
 
-    private void takeOffManagers() {
-        healthManager.setStoppedPlan(true);
+    private boolean manageHeal() {
+        healthManager.checkHealth();
 
-        for (Message message : queue) {
-            if (message.getManager() instanceof ExpeditionManager
-                    || message.getManager() instanceof DungeonManager) {
-                queue.remove(message);
-            }
-        }
+        return healthManager.isStoppedPlan();
     }
 
     private void executeMessage() {
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
-            Message msg = queue.poll();
+            Message msg = null;
+            boolean lowHealth = manageHeal();
+            if (lowHealth) {
+                for (Message message : queue) {
+                    if (!(message.getManager() instanceof ExpeditionManager)
+                            && !(message.getManager() instanceof DungeonManager)) {
+                        msg = message;
+                        queue.remove(message);
+                    }
+                }
+            } else {
+                msg = queue.poll();
+            }
+
             try {
                 msg.execute();
                 Message newMSG = msg.getPlan();
