@@ -169,7 +169,11 @@ public class Core implements Runnable {
             WebElement element = DRIVER.findElement(By.id("blackoutDialognotification"));
             element.findElement(By.className("awesome-button")).click();
         } catch (Throwable e) {
+            try {
+                DRIVER.findElement(By.id("linkLoginBonus")).click();
+            } catch (Throwable ee) {
 
+            }
         }
     }
 
@@ -211,15 +215,7 @@ public class Core implements Runnable {
         }
     }
 
-    private boolean manageHeal() {
-        healthManager.checkHealth();
-
-        return healthManager.isStoppedPlan();
-    }
-    private boolean wasDeleted = false;
-
-    private void executeMessage() {
-        Message msg = null;
+    private void chechHealth() {
         boolean lowHealth = manageHeal();
         if (lowHealth) {
             List<Message> list = new ArrayList();
@@ -240,9 +236,20 @@ public class Core implements Runnable {
                 wasDeleted = false;
             }
         }
-        if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
+    }
 
-            msg = queue.poll();
+    private boolean manageHeal() {
+        healthManager.checkHealth();
+
+        return healthManager.isStoppedPlan();
+    }
+    private boolean wasDeleted = false;
+
+    private void executeMessage() {
+
+        if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
+            chechHealth();
+            Message msg = queue.poll();
 
             try {
                 msg.execute();
