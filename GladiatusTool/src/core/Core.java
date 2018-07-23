@@ -219,26 +219,30 @@ public class Core implements Runnable {
     private boolean wasDeleted = false;
 
     private void executeMessage() {
-        if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
-            Message msg = null;
-            boolean lowHealth = manageHeal();
-            if (lowHealth) {
-                for (Message message : queue) {
-                    if ((message.getManager() instanceof ExpeditionManager)
-                            || (message.getManager() instanceof ArenaManager)) {
-                        msg = message;
-                        queue.remove(message);
-                    }
+        Message msg = null;
+        boolean lowHealth = manageHeal();
+        if (lowHealth) {
+            List<Message> list = new ArrayList();
+            for (Message message : queue) {
+                if ((message.getManager() instanceof ExpeditionManager)
+                        || (message.getManager() instanceof ArenaManager)) {
+                    list.add(message);
                 }
-                wasDeleted = true;
-                return;
-            } else {
-                msg = queue.poll();
             }
+            for (Message message : list) {
+                queue.remove(message);
+            }
+            wasDeleted = true;
+        } else {
             if (wasDeleted) {
                 initExpedition();
                 initArena();
+                wasDeleted = false;
             }
+        }
+        if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
+
+            msg = queue.poll();
 
             try {
                 msg.execute();
