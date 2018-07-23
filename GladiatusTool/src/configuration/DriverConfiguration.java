@@ -30,7 +30,7 @@ public class DriverConfiguration extends Configuration {
 
     private final String mozilla = "webdriver.firefox.driver";
     private final String chrome = "webdriver.chrome.driver";
-    private final String gecko = "lib/geckodriver.exe";
+    private final String gecko = "driver/geckodriver.exe";
     private String webDriver;
     private boolean isChrome;
     private String LANG;
