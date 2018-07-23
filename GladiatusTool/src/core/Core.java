@@ -251,9 +251,7 @@ public class Core implements Runnable {
                     queue.add(newMSG);
                 }
             } catch (Throwable e) {
-                DRIVER.close();
-                initDriver(url, chrome);
-                initBeforeStart();
+                reload();
             }
         }
     }
