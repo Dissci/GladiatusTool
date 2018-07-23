@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public abstract class Configuration {
 
     protected final Properties properties = new Properties();
-    protected final String PATH = "src/properties/";
+    protected final String PATH = "src/resources/";
     protected final String FILE;
     protected final String FULL_PATH;
     protected InputStream in;

@@ -175,7 +175,7 @@ public class Core implements Runnable {
 
     private void reload() {
         DRIVER.close();
-        queue.clear();
+        initQueue();
         initDriver(url, chrome);
         initBeforeStart();
     }
@@ -198,10 +198,9 @@ public class Core implements Runnable {
         beforeStart();
 
         while (true) {
-
-            checkNotification();
-
             try {
+                checkNotification();
+
                 executeMessage();
             } catch (NoSuchElementException e) {
                 reload();
