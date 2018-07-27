@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import manager.ArenaManager;
 import manager.CircuTurmaManager;
-import manager.FightManager;
+import manager.QuestsManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -52,6 +52,7 @@ public class Core implements Runnable {
     private int criticalHealthLevel;
     private CircuTurmaManager circuTurmaManager;
     private ArenaManager arenaManager;
+    private QuestsManager questsManager;
 
     public Core(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
@@ -97,8 +98,8 @@ public class Core implements Runnable {
         dungeonManager = dungeonPermition ? new DungeonManager(lag, dungeonMode) : null;
         expeditionManager = expeditionPermition ? new ExpeditionManager(lag, expeditionEnemy) : null;
         circuTurmaManager = turmaPermition ? new CircuTurmaManager(lag, "cooldown_bar_text_ct", "cooldown_bar_ct", 3, "own3") : null;
-
         arenaManager = arenaPermition ? new ArenaManager(lag, "cooldown_bar_text_arena", "cooldown_bar_arena", 1, "own2") : null;
+        questsManager = new QuestsManager(dungeonPermition, expeditionPermition, arenaPermition, turmaPermition, lag);
     }
 
     private void initDriver(String url, boolean chrome) {
@@ -156,12 +157,23 @@ public class Core implements Runnable {
         }
     }
 
+    private void initQuests() {
+        //  questsManager.setEnemyNames(getExpeditionEnemyName(), getDungeonName());
+        Message msg1 = questsManager.getPlan();
+        if (msg1 != null) {
+            queue.add(msg1);
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
     private void initBeforeStart() {
         login.execute();
         initExpedition();
         initDungeon();
         initCircu();
         initArena();
+        initQuests();
     }
 
     private void checkNotification() {
@@ -253,6 +265,7 @@ public class Core implements Runnable {
 
             try {
                 msg.execute();
+                setNamesForQuestManager(msg);
                 Message newMSG = msg.getPlan();
                 if (newMSG != null) {
                     queue.add(newMSG);
@@ -260,6 +273,18 @@ public class Core implements Runnable {
             } catch (Throwable e) {
                 reload();
             }
+        }
+    }
+    private boolean expNameSetted = false;
+    private boolean dungeonNameSetted = false;
+
+    private void setNamesForQuestManager(Message msg) {
+        if (msg.getManager() instanceof ExpeditionManager && !expNameSetted) {
+            questsManager.setEnemyNames(getExpeditionEnemyName(), getDungeonName());
+            expNameSetted = true;
+        } else if (msg.getManager() instanceof DungeonManager && !dungeonNameSetted) {
+            questsManager.setEnemyNames(getExpeditionEnemyName(), getDungeonName());
+            dungeonNameSetted = true;
         }
     }
 
@@ -270,6 +295,14 @@ public class Core implements Runnable {
         } catch (InterruptedException ex) {
             Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public String getExpeditionEnemyName() {
+        return expeditionManager == null ? "@SpecialCharacter" : expeditionManager.getExpeditionEnemyName();
+    }
+
+    public String getDungeonName() {
+        return dungeonManager == null ? "@SpecialCharacter" : dungeonManager.getDungeonName();
     }
 
     @Override

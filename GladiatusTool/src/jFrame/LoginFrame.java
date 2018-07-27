@@ -206,7 +206,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private String getPath() {
         filechooser.setFileFilter(filter);
         filechooser.showOpenDialog(this);
-        driverConfiguration.setWebDriver(filechooser.getSelectedFile().toPath().toString());
+        driverConfiguration.initSystemProperties(filechooser.getSelectedFile().toPath().toString());
         return driverConfiguration.getWebDriver();
     }
 

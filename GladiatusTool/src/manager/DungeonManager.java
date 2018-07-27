@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -20,6 +19,7 @@ import org.openqa.selenium.WebElement;
 public class DungeonManager extends Manager {
 
     private final int dungeonMode;
+    private String dungeonName;
 
     public DungeonManager(Long lag, int dungeonMode) {
         super(lag);
@@ -33,7 +33,7 @@ public class DungeonManager extends Manager {
             click(dungeonOption);
             attackOnEnemy();
         } catch (Throwable e) {
-            
+
         }
     }
 
@@ -46,16 +46,27 @@ public class DungeonManager extends Manager {
             }
         }
         throw new Throwable();
-    }   
-    
+    }
+
+    private void setDungeonName() {
+        if (dungeonName == null) {
+            dungeonName = Core.DRIVER.findElement(By.className("dungeon_header_open")).getText();
+        }
+    }
+
+    public String getDungeonName() {
+        return dungeonName;
+    }
+
     @Override
     public void execute() {
         WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
         click(dungeon);
+        setDungeonName();
         try {
-           attackOnEnemy();
+            attackOnEnemy();
         } catch (Throwable e) {
-            openDungeon();            
+            openDungeon();
         }
     }
 

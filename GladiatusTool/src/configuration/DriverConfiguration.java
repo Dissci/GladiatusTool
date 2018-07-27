@@ -41,7 +41,7 @@ public class DriverConfiguration extends Configuration {
         super(true, "configProp.properties");
         this.webDriver = webDriver;
         isWebDriverChrome();
-        initSystemProperties(webDriver, isChrome);
+        initSystemProperties(webDriver);
 
     }
 
@@ -59,9 +59,9 @@ public class DriverConfiguration extends Configuration {
         }
     }
 
-    public void initSystemProperties(String webDriver, boolean isChrome) {
+    public void initSystemProperties(String webDriver) {
         setWebDriver(webDriver);
-        setIsChrome(isChrome);
+        isIsChrome();
 
         if (isChrome) {
             System.setProperty(chrome, webDriver);

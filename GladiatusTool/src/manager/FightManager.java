@@ -77,8 +77,6 @@ public class FightManager extends Manager {
             return new Message(cooldown, this);
         } catch (InterruptedException ex) {
             Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Throwable e) {
-
         }
         return null;
     }
