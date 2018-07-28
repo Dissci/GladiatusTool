@@ -5,6 +5,7 @@
  */
 package jFrame;
 
+import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
 import core.Core;
@@ -126,14 +127,12 @@ public class LoginFrame extends javax.swing.JFrame {
                 serverList.getSelectedItem().toString(), expeditions.isSelected(),
                 dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(),
                 getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
-        if (checkBrowserPath()) {
-            driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
-        }
+        driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
+
+       // new Buffer().serializableObject(userConfiguration, "test");
+        //driverConfiguration.serializableObject();
     }
 
-//    private String getLanguageShort() {
-//        language.getSelectedItem().toString();
-//    }
     private int getExpeditionFocus() {
         if (jRadioButton2.isSelected()) {
             return 0;
@@ -186,19 +185,24 @@ public class LoginFrame extends javax.swing.JFrame {
         return Integer.parseInt(criticalHealthLevel.getValue().toString());
     }
 
-    private void start() throws IOException {
+    private void start() {
+
         if (checkBrowserPath() && checkLogin()) {
-            saveConfig();
-            Thread thread = new Thread(new Core(userConfiguration,
-                    driverConfiguration));
-            thread.start();
+            try {
+                saveConfig();
+                Thread thread = new Thread(new Core(userConfiguration,
+                        driverConfiguration));
+                thread.start();
+            } catch (IOException ex) {
+                Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     private boolean checkLogin() {
-        if(userName.getText().isEmpty() || password.getText().isEmpty()){
-             JOptionPane.showMessageDialog(this, "You have to fill name and password", "Alert", JOptionPane.ERROR_MESSAGE);
-             return false;
+        if (userName.getText().isEmpty() || password.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "You have to fill name and password", "Alert", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
         return true;
     }
@@ -206,8 +210,14 @@ public class LoginFrame extends javax.swing.JFrame {
     private String getPath() {
         filechooser.setFileFilter(filter);
         filechooser.showOpenDialog(this);
-        driverConfiguration.initSystemProperties(filechooser.getSelectedFile().toPath().toString());
-        return driverConfiguration.getWebDriver();
+        try {
+            String path = filechooser.getSelectedFile().toPath().toString();
+            driverConfiguration.initSystemProperties(path);
+            return driverConfiguration.getWebDriver();
+        } catch (Throwable e) {
+
+        }
+        return "";
     }
 
     private boolean checkBrowserPath() {
@@ -619,11 +629,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            start();
-        } catch (IOException ex) {
-            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        start();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void getPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getPathActionPerformed

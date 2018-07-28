@@ -5,11 +5,16 @@
  */
 package configuration;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author krkoska.tomas
  */
-public abstract class Configuration {
+public abstract class Configuration implements Serializable {
 
     protected final Properties properties = new Properties();
     protected final String PATH = "src/resources/";
@@ -26,6 +31,7 @@ public abstract class Configuration {
     protected final String FULL_PATH;
     protected InputStream in;
     protected FileOutputStream out;
+    private final String format = ".ser";
 
     public Configuration(boolean in, String file) {
         this.FILE = file;
@@ -41,7 +47,6 @@ public abstract class Configuration {
             System.exit(0);
         }
     }
-
     protected void setStream(boolean input, String propFile) throws FileNotFoundException {
         if (input) {
             if (out != null) {
@@ -70,4 +75,5 @@ public abstract class Configuration {
             }
         }
     }
+  
 }

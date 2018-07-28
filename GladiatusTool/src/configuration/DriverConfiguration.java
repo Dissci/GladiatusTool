@@ -47,7 +47,7 @@ public class DriverConfiguration extends Configuration {
 
     public DriverConfiguration() {
         super(true, "configProp.properties");
-        setDriverConfig();
+         setDriverConfig();
         initSystemProperty();
     }
 
@@ -73,22 +73,27 @@ public class DriverConfiguration extends Configuration {
     }
 
     private void setDriverConfig() {
+//        try {
         setIsChrome(Boolean.parseBoolean(properties.getProperty("chrome")));
         setWebDriver(properties.getProperty("webdriver"));
         setLANG(properties.getProperty("lang"));
         setURL(properties.getProperty("url"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(DriverConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void setDriverConfig(String webDriver, String lang) {
         try {
             setStream(false, FULL_PATH);
-            setWebDriver(webDriver);
-            setLANG(lang);
-            isWebDriverChrome();
-            properties.setProperty("chrome", Boolean.toString(isChrome));
-            properties.setProperty("webdriver", webDriver);
-            properties.setProperty("lang", lang);
-
+        setWebDriver(webDriver);
+        setLANG(lang);
+        isWebDriverChrome();
+        properties.setProperty("chrome", Boolean.toString(isChrome));
+        properties.setProperty("webdriver", webDriver);
+        properties.setProperty("lang", lang);
             properties.store(out, null);
             out.close();
         } catch (IOException ex) {

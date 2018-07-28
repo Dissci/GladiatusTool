@@ -5,6 +5,7 @@
  */
 package configuration;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public class UserConfiguration extends Configuration {
             setDungeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
             setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
         } catch (NumberFormatException e) {
-            
+
         }
     }
 
@@ -96,9 +97,6 @@ public class UserConfiguration extends Configuration {
         out.close();
     }
 
-//    public void checkIfnull() {
-//        if(user == null || user.isEmpty())
-//    }
     public String getUser() {
         return user;
     }
