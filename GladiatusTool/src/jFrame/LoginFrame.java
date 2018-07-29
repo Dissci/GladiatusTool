@@ -5,9 +5,9 @@
  */
 package jFrame;
 
-import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
+import core.Authorization;
 import core.Core;
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +45,11 @@ public class LoginFrame extends javax.swing.JFrame {
         initServerList();
         initLanguageList();
         centerLoginPanel();
+         try {
+                    new Authorization().getID();
+                } catch (Throwable ex) {
+                    Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
     }
 
     private void centerLoginPanel() {
@@ -129,7 +134,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
         driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
 
-       // new Buffer().serializableObject(userConfiguration, "test");
+        // new Buffer().serializableObject(userConfiguration, "test");
         //driverConfiguration.serializableObject();
     }
 
@@ -186,7 +191,6 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void start() {
-
         if (checkBrowserPath() && checkLogin()) {
             try {
                 saveConfig();
