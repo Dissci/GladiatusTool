@@ -19,6 +19,7 @@ public class LoginManager extends Manager {
 
     private UserConfiguration userConfiguration;
     private int indexServer;
+    private final long restartTime = 3600000;
 
     public LoginManager(UserConfiguration userConfiguration, int indexServer) {
         super(1000L);
@@ -33,6 +34,25 @@ public class LoginManager extends Manager {
 
     @Override
     public void inExecute() {
+        Core.DRIVER.manage().deleteAllCookies();
+        Core.DRIVER.close();
+
+    }
+
+    @Override
+    public Message getPlan() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
+    }
+
+    public void logIn() {
         try {
             WebElement element = Core.DRIVER.findElement(By.className("openX_interstitial"));
             element.findElement(By.tagName("a")).click();
@@ -47,18 +67,5 @@ public class LoginManager extends Manager {
         selectBox.selectByIndex(indexServer);
         click(Core.DRIVER.findElement(By.id("loginsubmit")));
         Core.OVERVIEW_URL = Core.DRIVER.getCurrentUrl();
-    }
-
-    @Override
-    public Message getPlan() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void beforeExecute() {
-    }
-
-    @Override
-    protected void afterExecute() {
     }
 }

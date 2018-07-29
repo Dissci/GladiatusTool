@@ -45,11 +45,11 @@ public class LoginFrame extends javax.swing.JFrame {
         initServerList();
         initLanguageList();
         centerLoginPanel();
-         try {
-                    new Authorization().getID();
-                } catch (Throwable ex) {
-                    Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        try {
+            new Authorization().getID();
+        } catch (Throwable ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void centerLoginPanel() {

@@ -170,7 +170,7 @@ public class Core implements Runnable {
     }
 
     private void initBeforeStart() {
-        login.execute();
+        login.logIn();
         checkNotification();
         initExpedition();
         initDungeon();
