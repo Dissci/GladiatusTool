@@ -31,24 +31,20 @@ public class ExpeditionManager extends Manager {
             enemyName = element.findElement(By.className("expedition_name")).getText();
         }
     }
-    
-    public String getExpeditionEnemyName(){
+
+    public String getExpeditionEnemyName() {
         return enemyName;
     }
 
     @Override
-    public void execute() {
-        try {
-            WebElement expedition = Core.DRIVER.findElement(By.id("cooldown_bar_expedition"));
-            click(expedition);
-            WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
-            List<WebElement> listt = attack.findElements(By.className("expedition_box"));
-            if (listt.get(indexOfExpedition).findElements(By.className("expedition_cooldown_reduce")).size() == 0) {
-                setExpeditionEnemyName(listt.get(indexOfExpedition));
-                attack(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
-            }
-        } catch (Throwable e) {
-
+    public void inExecute() {
+        WebElement expedition = Core.DRIVER.findElement(By.id("cooldown_bar_expedition"));
+        click(expedition);
+        WebElement attack = Core.DRIVER.findElement(By.id("expedition_list"));
+        List<WebElement> listt = attack.findElements(By.className("expedition_box"));
+        if (listt.get(indexOfExpedition).findElements(By.className("expedition_cooldown_reduce")).size() == 0) {
+            setExpeditionEnemyName(listt.get(indexOfExpedition));
+            attack(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
         }
     }
 
@@ -63,9 +59,15 @@ public class ExpeditionManager extends Manager {
             return new Message(cooldown, this);
         } catch (InterruptedException ex) {
             Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Throwable e) {
-
         }
         return null;
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }

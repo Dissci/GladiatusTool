@@ -112,11 +112,19 @@ public class HealthManager extends Manager {
     }
 
     @Override
-    public void execute() {
+    public Message getPlan() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Message getPlan() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void inExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }

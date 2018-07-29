@@ -68,7 +68,7 @@ public class DriverConfiguration extends Configuration {
         } else {
             System.setProperty(mozilla, webDriver);
         }
-
+//linkLoginBonus
         System.setProperty("webdriver.gecko.driver", gecko);
     }
 

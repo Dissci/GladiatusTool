@@ -59,7 +59,7 @@ public class DungeonManager extends Manager {
     }
 
     @Override
-    public void execute() {
+    public void inExecute() {
         WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
         click(dungeon);
         setDungeonName();
@@ -82,5 +82,13 @@ public class DungeonManager extends Manager {
         String time = cooldown_bar.getText();
         Long cooldown = calculateNextExecute(time);
         return new Message(cooldown, this);
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }

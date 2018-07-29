@@ -46,7 +46,7 @@ public class QuestsManager extends Manager {
     }
 
     @Override
-    public void execute() throws Throwable {
+    public void inExecute() {
         Core.DRIVER.findElements(By.className(tabBar)).get(1).click();
         WebElement table = Core.DRIVER.findElement(By.className(questTable));
         restartQuests(table);
@@ -124,5 +124,13 @@ public class QuestsManager extends Manager {
     public void setEnemyNames(String expeditionName, String dungeonName) {
         this.expeditionEnemyName = expeditionName;
         this.dungeonName = dungeonName;
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }

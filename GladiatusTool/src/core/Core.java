@@ -23,7 +23,9 @@ import manager.CircuTurmaManager;
 import manager.QuestsManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -108,6 +110,7 @@ public class Core implements Runnable {
         } else {
             DRIVER = new FirefoxDriver();
         }
+        DRIVER.manage().deleteAllCookies();
         DRIVER.manage().window().maximize();
         LOGON_URL = "https:" + url;
         DRIVER.get(LOGON_URL);
@@ -158,7 +161,6 @@ public class Core implements Runnable {
     }
 
     private void initQuests() {
-        //  questsManager.setEnemyNames(getExpeditionEnemyName(), getDungeonName());
         Message msg1 = questsManager.getPlan();
         if (msg1 != null) {
             queue.add(msg1);
@@ -169,6 +171,7 @@ public class Core implements Runnable {
 
     private void initBeforeStart() {
         login.execute();
+        checkNotification();
         initExpedition();
         initDungeon();
         initCircu();
@@ -189,7 +192,7 @@ public class Core implements Runnable {
         }
     }
 
-    private void reload() {
+    private void reload() throws WebDriverException {
         DRIVER.close();
         initQueue();
         initDriver(url, chrome);
@@ -221,6 +224,8 @@ public class Core implements Runnable {
             } catch (NoSuchElementException e) {
                 reload();
             } catch (NullPointerException ex) {
+                reload();
+            } catch (WebDriverException ee) {
                 reload();
             }
             sleepCore();
@@ -258,20 +263,28 @@ public class Core implements Runnable {
     private boolean wasDeleted = false;
 
     private void executeMessage() {
-
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             chechHealth();
             Message msg = queue.poll();
-
-            try {
-                msg.execute();
-                setNamesForQuestManager(msg);
-                Message newMSG = msg.getPlan();
-                if (newMSG != null) {
-                    queue.add(newMSG);
+            int attempts = 0;
+            while (attempts < 2) {
+                try {
+                    msg.execute();
+                    setNamesForQuestManager(msg);
+                    Message newMSG = msg.getPlan();
+                    if (newMSG != null) {
+                        queue.add(newMSG);
+                    }
+                    break;
+                } catch (StaleElementReferenceException e) {
+                } catch (NoSuchElementException eex) {
+                } catch (NullPointerException ex) {
+                } catch (WebDriverException ee) {
                 }
-            } catch (Throwable e) {
-                reload();
+                attempts++;
+                if (attempts == 2) {
+                    reload();
+                }
             }
         }
     }

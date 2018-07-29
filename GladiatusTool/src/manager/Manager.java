@@ -9,6 +9,9 @@ import core.Core;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -25,7 +28,19 @@ public abstract class Manager {
         this.rndLag = new Random(lag);
     }
 
-    public abstract void execute() throws Throwable;
+    public void execute() throws StaleElementReferenceException, NoSuchElementException, NullPointerException, WebDriverException {
+        beforeExecute();
+        inExecute();
+        afterExecute();
+
+        goOnOverview();
+    }
+
+    protected abstract void beforeExecute();
+
+    protected abstract void inExecute();
+
+    protected abstract void afterExecute();
 
     public abstract Message getPlan();
 

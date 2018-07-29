@@ -32,7 +32,7 @@ public class FightManager extends Manager {
     }
 
     @Override
-    public void execute() {
+    public void inExecute() {
         click(Core.DRIVER.findElement(By.id(cooldownBar)));
         WebElement mainnav = Core.DRIVER.findElement(By.id("mainnav"));
         List<WebElement> tabs = mainnav.findElements(By.className("awesome-tabs"));
@@ -79,5 +79,13 @@ public class FightManager extends Manager {
             Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }

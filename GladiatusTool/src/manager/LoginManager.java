@@ -32,7 +32,7 @@ public class LoginManager extends Manager {
     }
 
     @Override
-    public void execute() {
+    public void inExecute() {
         try {
             WebElement element = Core.DRIVER.findElement(By.className("openX_interstitial"));
             element.findElement(By.tagName("a")).click();
@@ -52,5 +52,13 @@ public class LoginManager extends Manager {
     @Override
     public Message getPlan() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected void afterExecute() {
     }
 }
