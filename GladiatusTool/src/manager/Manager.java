@@ -42,7 +42,7 @@ public abstract class Manager {
 
     protected abstract void afterExecute();
 
-    public abstract Message getPlan();
+    public abstract Message getPlan() throws StaleElementReferenceException, NoSuchElementException, NullPointerException, WebDriverException;
 
     public Long getLag() {
         return lag;
@@ -97,6 +97,5 @@ public abstract class Manager {
 
     protected void attack(WebElement element) {
         click(element);
-        goOnOverview();
     }
 }

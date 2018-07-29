@@ -36,6 +36,7 @@ public class QuestsManager extends Manager {
     private final String finishButton = "quest_slot_button_finish";
     private String expeditionEnemyName = "@SpecialCharacter";
     private String dungeonName = "@@SpecialCharacter";
+    private Long fullStackCooldown = 600000L;
 
     public QuestsManager(boolean dungeon, boolean expedition, boolean arena, boolean circuTurma, Long lag) {
         super(lag);
@@ -114,9 +115,13 @@ public class QuestsManager extends Manager {
             WebElement cooldown_bar = Core.DRIVER.findElement(By.id("quest_header_cooldown")).findElement(By.className("ticker"));
             time = cooldown_bar.getText();
         } catch (NoSuchElementException e) {
-
         }
+
         Long cooldown = calculateNextExecute(time);
+        if (isFullStackOfQuests()) {
+            cooldown += fullStackCooldown;
+        }
+
         goOnOverview();
         return new Message(cooldown, this);
     }

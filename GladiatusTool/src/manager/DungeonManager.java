@@ -62,12 +62,12 @@ public class DungeonManager extends Manager {
     public void inExecute() {
         WebElement dungeon = Core.DRIVER.findElement(By.id("cooldown_bar_dungeon"));
         click(dungeon);
-        setDungeonName();
         try {
             attackOnEnemy();
         } catch (Throwable e) {
             openDungeon();
         }
+        setDungeonName();
     }
 
     @Override

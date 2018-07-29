@@ -220,7 +220,10 @@ public class Core implements Runnable {
             try {
                 checkNotification();
 
-                executeMessage();
+                Message msg = executeMessage();
+                if (msg != null) {
+                    setPlan(msg);
+                }
             } catch (NoSuchElementException e) {
                 reload();
             } catch (NullPointerException ex) {
@@ -262,7 +265,7 @@ public class Core implements Runnable {
     }
     private boolean wasDeleted = false;
 
-    private void executeMessage() {
+    private Message executeMessage() {
         if (queue.size() > 0 && System.currentTimeMillis() >= queue.peek().getExecuteTime()) {
             chechHealth();
             Message msg = queue.poll();
@@ -271,10 +274,6 @@ public class Core implements Runnable {
                 try {
                     msg.execute();
                     setNamesForQuestManager(msg);
-                    Message newMSG = msg.getPlan();
-                    if (newMSG != null) {
-                        queue.add(newMSG);
-                    }
                     break;
                 } catch (StaleElementReferenceException e) {
                 } catch (NoSuchElementException eex) {
@@ -286,10 +285,33 @@ public class Core implements Runnable {
                     reload();
                 }
             }
+            return msg;
         }
+        return null;
     }
     private boolean expNameSetted = false;
     private boolean dungeonNameSetted = false;
+
+    private void setPlan(Message msg) {
+        int attempts = 0;
+        while (attempts < 2) {
+            try {
+                Message newMSG = msg.getPlan();
+                if (newMSG != null) {
+                    queue.add(newMSG);
+                }
+                break;
+            } catch (StaleElementReferenceException e) {
+            } catch (NoSuchElementException eex) {
+            } catch (NullPointerException ex) {
+            } catch (WebDriverException ee) {
+            }
+            attempts++;
+            if (attempts == 2) {
+                reload();
+            }
+        }
+    }
 
     private void setNamesForQuestManager(Message msg) {
         if (msg.getManager() instanceof ExpeditionManager && !expNameSetted) {
@@ -305,8 +327,10 @@ public class Core implements Runnable {
         Thread th = new Thread();
         try {
             th.sleep(sleepTime);
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Core.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
