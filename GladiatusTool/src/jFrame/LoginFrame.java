@@ -9,6 +9,7 @@ import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
 import core.Core;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,7 +56,6 @@ public class LoginFrame extends javax.swing.JFrame {
         int widthP = loginPanel.getWidth();
         int heightP = loginPanel.getHeight();
         loginPanel.setLocation((this.getWidth() - widthP) / 2, (this.getHeight() - heightP) / 2);
-
     }
 
     private void loadImageIcon() {
@@ -344,6 +344,11 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel1.setText("User:");
 
         userName.setText("jTextField1");
+        userName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                userNameFocusGained(evt);
+            }
+        });
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Password:");
@@ -354,6 +359,11 @@ public class LoginFrame extends javax.swing.JFrame {
         serverList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         password.setText("jPasswordField1");
+        password.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                passwordFocusGained(evt);
+            }
+        });
 
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
@@ -662,6 +672,14 @@ public class LoginFrame extends javax.swing.JFrame {
     private void languageItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_languageItemStateChanged
         languageStateChange();
     }//GEN-LAST:event_languageItemStateChanged
+
+    private void userNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userNameFocusGained
+        userName.selectAll();
+    }//GEN-LAST:event_userNameFocusGained
+
+    private void passwordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passwordFocusGained
+        password.selectAll();
+    }//GEN-LAST:event_passwordFocusGained
 
     /**
      * @param args the command line arguments
