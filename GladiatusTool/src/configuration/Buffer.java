@@ -22,9 +22,9 @@ public class Buffer {
 
     private final String format = ".ser";
 
-    public void serializableObject(Object object, String FILE) throws FileNotFoundException, IOException {
+    public void serializableObject(Object object, String fileName) throws FileNotFoundException, IOException {
         ObjectOutputStream outputStream = new ObjectOutputStream(
-                new FileOutputStream(new File(FILE + format)));
+                new FileOutputStream(new File(fileName + format)));
 
         outputStream.writeObject(object);
         outputStream.close();

@@ -5,15 +5,11 @@
  */
 package configuration;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -31,7 +27,6 @@ public abstract class Configuration implements Serializable {
     protected final String FULL_PATH;
     protected InputStream in;
     protected FileOutputStream out;
-    private final String format = ".ser";
 
     public Configuration(boolean in, String file) {
         this.FILE = file;

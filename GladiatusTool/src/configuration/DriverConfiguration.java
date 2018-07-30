@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +46,7 @@ public class DriverConfiguration extends Configuration {
 
     public DriverConfiguration() {
         super(true, "configProp.properties");
-         setDriverConfig();
+        setDriverConfig();
         initSystemProperty();
     }
 
@@ -68,7 +67,7 @@ public class DriverConfiguration extends Configuration {
         } else {
             System.setProperty(mozilla, webDriver);
         }
-//linkLoginBonus
+
         System.setProperty("webdriver.gecko.driver", gecko);
     }
 
@@ -88,12 +87,12 @@ public class DriverConfiguration extends Configuration {
     public void setDriverConfig(String webDriver, String lang) {
         try {
             setStream(false, FULL_PATH);
-        setWebDriver(webDriver);
-        setLANG(lang);
-        isWebDriverChrome();
-        properties.setProperty("chrome", Boolean.toString(isChrome));
-        properties.setProperty("webdriver", webDriver);
-        properties.setProperty("lang", lang);
+            setWebDriver(webDriver);
+            setLANG(lang);
+            isWebDriverChrome();
+            properties.setProperty("chrome", Boolean.toString(isChrome));
+            properties.setProperty("webdriver", webDriver);
+            properties.setProperty("lang", lang);
             properties.store(out, null);
             out.close();
         } catch (IOException ex) {
