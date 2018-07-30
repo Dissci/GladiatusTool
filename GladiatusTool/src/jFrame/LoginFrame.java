@@ -9,8 +9,8 @@ import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
 import core.Core;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +20,11 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jsoup.nodes.Document;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  *
@@ -50,6 +55,7 @@ public class LoginFrame extends javax.swing.JFrame {
         initServerList();
         initLanguageList();
         centerLoginPanel();
+        test();
     }
 
     private void centerLoginPanel() {
@@ -757,4 +763,27 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> serverList;
     private javax.swing.JTextField userName;
     // End of variables declaration//GEN-END:variables
+
+    private void test() {
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface netint : Collections.list(nets)) {
+                byte[] mac = netint.getHardwareAddress();
+
+                //Print MAC (Hardware address) in HEX format
+                if (mac != null) {
+                    System.out.printf("Hardware address: %s\n",
+                            Arrays.toString(mac));
+                    StringBuilder sbMac = new StringBuilder();
+                    for (int i = 0; i < mac.length; i++) {
+                        sbMac.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                    }
+                    System.out.printf("Hardware address (HEX): [%s]\n", sbMac.toString());
+                }
+            }
+        } catch (SocketException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }
