@@ -30,7 +30,7 @@ public class Buffer {
         outputStream.close();
     }
 
-    protected Object deserializableObject(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public Object deserializableObject(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(fileName + format);
         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
         ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream);

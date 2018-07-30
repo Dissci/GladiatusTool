@@ -45,11 +45,6 @@ public class LoginFrame extends javax.swing.JFrame {
         initServerList();
         initLanguageList();
         centerLoginPanel();
-        try {
-            new Authorization().getID();
-        } catch (Throwable ex) {
-            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void centerLoginPanel() {
@@ -86,7 +81,7 @@ public class LoginFrame extends javax.swing.JFrame {
         }
 
         String server = userConfiguration.getServer();
-        if (!server.isEmpty() || server != null) {
+        if (server != null && !server.isEmpty()) {
             serverList.setSelectedItem(server);
         }
     }

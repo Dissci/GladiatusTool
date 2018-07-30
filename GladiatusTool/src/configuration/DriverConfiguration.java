@@ -30,6 +30,7 @@ public class DriverConfiguration extends Configuration {
     private final String mozilla = "webdriver.firefox.driver";
     private final String chrome = "webdriver.chrome.driver";
     private final String gecko = "driver/geckodriver.exe";
+    private final String chromeDriver = "driver/chromedriver.exe";
     private String webDriver;
     private boolean isChrome;
     private String LANG;
@@ -103,11 +104,12 @@ public class DriverConfiguration extends Configuration {
     private void initSystemProperty() {
         if (isChrome) {
             System.setProperty(chrome, webDriver);
+            System.setProperty("webdriver.chrome.driver", chromeDriver);
         } else {
             System.setProperty(mozilla, webDriver);
+            System.setProperty("webdriver.gecko.driver", gecko);
         }
 
-        System.setProperty("webdriver.gecko.driver", gecko);
     }
 
     private Document getHTMLdoc() throws MalformedURLException, IOException {
