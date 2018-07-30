@@ -110,6 +110,7 @@ public class Core implements Runnable {
         } else {
             DRIVER = new FirefoxDriver();
         }
+        
         DRIVER.manage().deleteAllCookies();
         DRIVER.manage().window().maximize();
         LOGON_URL = "https:" + url;
