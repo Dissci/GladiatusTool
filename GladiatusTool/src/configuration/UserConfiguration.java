@@ -5,10 +5,7 @@
  */
 package configuration;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -16,49 +13,21 @@ import java.util.logging.Logger;
  */
 public class UserConfiguration extends Configuration {
 
-    private String user;
-    private String password;
-    private String server;
-    private boolean expeditions;
-    private boolean dungeons;
-    private boolean arena;
-    private boolean turma;
-    private int lag;
-    private int criticalHealthLevel;
-    private int dungeonMode;
-    private int expeditionFocus;
-    private int serverIndex;
+    private String user = "";
+    private String password = "";
+    private String server = "";
+    private boolean expeditions = true;
+    private boolean dungeons = true;
+    private boolean arena = true;
+    private boolean turma = true;
+    private int lag = 10;
+    private int criticalHealthLevel = 0;
+    private int dungeonMode = 0;
+    private int expeditionFocus = 0;
+    private int serverIndex = 0;
 
     public UserConfiguration() {
-        super(true, "userProp.properties");
-        init();
-    }
-
-    private void init() {
-        try {
-            readUserConfig();
-        } catch (IOException ex) {
-            Logger.getLogger(UserConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void readUserConfig() throws IOException {
-        try {
-            setUser(properties.getProperty("user"));
-            setPassword(properties.getProperty("password"));
-            setServer(properties.getProperty("server"));
-            setExpeditions(Boolean.parseBoolean(properties.getProperty("expeditions")));
-            setDungeons(Boolean.parseBoolean(properties.getProperty("dungeons")));
-            setArena(Boolean.parseBoolean(properties.getProperty("arena")));
-            setTurma(Boolean.parseBoolean(properties.getProperty("turma")));
-            setCriticalHealthLevel(Integer.parseInt(
-                    properties.getProperty("criticalHealthLevel")));
-            setLag(Integer.parseInt(properties.getProperty("lag")));
-            setDungeonMode(Integer.parseInt(properties.getProperty("dungeonMode")));
-            setExpeditionFocus(Integer.parseInt(properties.getProperty("expeditionFocus")));
-        } catch (NumberFormatException e) {
-
-        }
+        super(true, "user");
     }
 
     public void setUserConfig(String user, String password, String server,
@@ -66,7 +35,6 @@ public class UserConfiguration extends Configuration {
             int criticalHealthLevel, int lag, int dungeonMode, int expeditionFocus,
             int serverIndex) throws IOException {
 
-        setStream(false, FULL_PATH);
         setUser(user);
         setPassword(password);
         setServer(server);
@@ -80,21 +48,6 @@ public class UserConfiguration extends Configuration {
         setExpeditionFocus(expeditionFocus);
         setServerIndex(serverIndex);
 
-        properties.setProperty("user", user);
-        properties.setProperty("password", password);
-        properties.setProperty("server", server);
-        properties.setProperty("expeditions", Boolean.toString(expeditions));
-        properties.setProperty("dungeons", Boolean.toString(dungeons));
-        properties.setProperty("arena", Boolean.toString(arena));
-        properties.setProperty("turma", Boolean.toString(turma));
-        properties.setProperty("criticalHealthLevel",
-                Integer.toString(criticalHealthLevel));
-        properties.setProperty("lag", Integer.toString(lag));
-        properties.setProperty("dungeonMode", Integer.toString(dungeonMode));
-        properties.setProperty("expeditionFocus", Integer.toString(expeditionFocus));
-
-        properties.store(out, null);
-        out.close();
     }
 
     public String getUser() {

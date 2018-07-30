@@ -5,9 +5,9 @@
  */
 package jFrame;
 
+import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
-import core.Authorization;
 import core.Core;
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.jsoup.nodes.Document;
 
 /**
  *
@@ -30,16 +31,19 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     private final JFileChooser filechooser;
     private final FileFilter filter = new FileNameExtensionFilter("EXE File", "exe");
-    private final UserConfiguration userConfiguration = new UserConfiguration();
-    private final DriverConfiguration driverConfiguration = new DriverConfiguration();
+    private UserConfiguration userConfiguration = new UserConfiguration();
+    private DriverConfiguration driverConfiguration;
     private String[][] languages;
     private boolean initializedLang = false;
+    private Document doc;
+    private final Buffer buffer = new Buffer();
 
     public LoginFrame() {
         filechooser = new JFileChooser();
         initComponents();
         setLocationRelativeTo(null);
         this.setTitle("Gladiatus Tool");
+        driverConfiguration = new DriverConfiguration(browserPath.getText());
         loadImageIcon();
         init();
         initServerList();
@@ -60,6 +64,14 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void init() {
+        Object object = buffer.deserializableObject(userConfiguration.getFULL_PATH());
+        if (object != null) {
+            userConfiguration = (UserConfiguration) object;
+        }
+        object = buffer.deserializableObject(driverConfiguration.getFULL_PATH());
+        if (object != null) {
+            driverConfiguration = (DriverConfiguration) object;
+        }
         userName.setText(userConfiguration.getUser());
         password.setText(userConfiguration.getPassword());
         expeditions.setSelected(userConfiguration.isExpeditions());
@@ -74,8 +86,9 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void initServerList() {
+        doc = buffer.getHTMLdoc(driverConfiguration.getURL(), driverConfiguration.getLANG());
         serverList.removeAllItems();
-        List<String> servers = driverConfiguration.loadListOfServers("login_server");
+        List<String> servers = buffer.loadListOfServers("login_server", doc);
         for (String server : servers) {
             serverList.addItem(server);
         }
@@ -88,7 +101,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void initLanguageList() {
         language.removeAllItems();
-        languages = driverConfiguration.loadListOfLanguages("mmoList1");
+        languages = buffer.loadListOfLanguages("mmoList1", doc);
         for (int i = 0; i < languages.length; i++) {
             language.addItem(languages[i][1]);
         }
@@ -128,9 +141,8 @@ public class LoginFrame extends javax.swing.JFrame {
                 dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(),
                 getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
         driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
-
-        // new Buffer().serializableObject(userConfiguration, "test");
-        //driverConfiguration.serializableObject();
+        buffer.serializableObject(userConfiguration, userConfiguration.getFULL_PATH());
+        buffer.serializableObject(driverConfiguration, driverConfiguration.getFULL_PATH());
     }
 
     private int getExpeditionFocus() {
