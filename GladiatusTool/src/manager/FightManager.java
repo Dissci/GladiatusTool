@@ -68,17 +68,11 @@ public class FightManager extends Manager {
 
     @Override
     public Message getPlan() {
-        Thread th = new Thread();
-        try {
-            th.sleep(1000);
-            WebElement cooldown_bar = Core.DRIVER.findElement(By.id(cooldownBarText));
-            String time = cooldown_bar.getText();
-            Long cooldown = calculateNextExecute(time);
-            return new Message(cooldown, this);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        sleepThreadTo1000();
+        WebElement cooldown_bar = Core.DRIVER.findElement(By.id(cooldownBarText));
+        String time = cooldown_bar.getText();
+        Long cooldown = calculateNextExecute(time);
+        return new Message(cooldown, this);
     }
 
     @Override

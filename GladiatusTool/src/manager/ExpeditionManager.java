@@ -44,23 +44,17 @@ public class ExpeditionManager extends Manager {
         List<WebElement> listt = attack.findElements(By.className("expedition_box"));
         if (listt.get(indexOfExpedition).findElements(By.className("expedition_cooldown_reduce")).size() == 0) {
             setExpeditionEnemyName(listt.get(indexOfExpedition));
-            attack(listt.get(indexOfExpedition).findElement(By.className("expedition_button")));
+            listt.get(indexOfExpedition).findElement(By.className("expedition_button")).click();
         }
     }
 
     @Override
     public Message getPlan() {
-        Thread th = new Thread();
-        try {
-            th.sleep(1000);
-            WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
-            String time = cooldown_bar.getText();
-            Long cooldown = calculateNextExecute(time);
-            return new Message(cooldown, this);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ExpeditionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        sleepThreadTo1000();
+        WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
+        String time = cooldown_bar.getText();
+        Long cooldown = calculateNextExecute(time);
+        return new Message(cooldown, this);
     }
 
     @Override

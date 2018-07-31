@@ -76,26 +76,29 @@ public abstract class Manager {
     }
 
     protected void click(WebElement element) {
-        Thread th = new Thread();
-        try {
-            th.sleep(1000);
-            element.click();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sleepThreadTo1000();
+        element.click();
     }
 
     protected void goOnOverview() {
+        sleepThreadTo500();
+        Core.DRIVER.get(Core.OVERVIEW_URL);
+    }
+
+    protected void sleepThreadTo1000() {
+        sleepThread(1000);
+    }
+
+    protected void sleepThreadTo500() {
+        sleepThread(500);
+    }
+
+    protected void sleepThread(long millis) {
         Thread th = new Thread();
         try {
-            th.sleep(1000);
-            Core.DRIVER.get(Core.OVERVIEW_URL);
+            th.sleep(millis);
         } catch (InterruptedException ex) {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    protected void attack(WebElement element) {
-        click(element);
     }
 }

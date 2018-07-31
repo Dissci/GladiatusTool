@@ -110,7 +110,7 @@ public class Core implements Runnable {
         } else {
             DRIVER = new FirefoxDriver();
         }
-        
+
         DRIVER.manage().deleteAllCookies();
         DRIVER.manage().window().maximize();
         LOGON_URL = "https:" + url;
@@ -193,10 +193,12 @@ public class Core implements Runnable {
         }
     }
 
-    private void reload() throws WebDriverException {
+    private void reload() {
         DRIVER.close();
         initQueue();
-        initDriver(url, chrome);
+        DRIVER.manage().deleteAllCookies();
+        DRIVER.get(LOGON_URL);
+        //initDriver(url, chrome);
         initBeforeStart();
     }
 
@@ -238,7 +240,7 @@ public class Core implements Runnable {
 
     private void chechHealth() {
         boolean lowHealth = manageHeal();
-        if (lowHealth) {
+        while (lowHealth) {
             List<Message> list = new ArrayList();
             for (Message message : queue) {
                 if ((message.getManager() instanceof ExpeditionManager)
@@ -250,7 +252,8 @@ public class Core implements Runnable {
                 queue.remove(message);
             }
             wasDeleted = true;
-        } else {
+        }
+        if (!lowHealth) {
             if (wasDeleted) {
                 initExpedition();
                 initArena();
@@ -283,7 +286,7 @@ public class Core implements Runnable {
                 }
                 attempts++;
                 if (attempts == 2) {
-                    reload();
+                    throw new WebDriverException("Second attempt to clarify element");
                 }
             }
             return msg;

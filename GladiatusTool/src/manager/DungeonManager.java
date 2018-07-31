@@ -41,7 +41,7 @@ public class DungeonManager extends Manager {
         List<WebElement> allImages = Core.DRIVER.findElements(By.tagName("img"));
         for (WebElement allImage : allImages) {
             if (allImage.getAttribute("src").contains("combatloc.gif")) {
-                attack(allImage);
+                allImage.click();
                 return;
             }
         }
@@ -72,12 +72,7 @@ public class DungeonManager extends Manager {
 
     @Override
     public Message getPlan() {
-        Thread th = new Thread();
-        try {
-            th.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DungeonManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sleepThreadTo1000();
         WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_dungeon"));
         String time = cooldown_bar.getText();
         Long cooldown = calculateNextExecute(time);
