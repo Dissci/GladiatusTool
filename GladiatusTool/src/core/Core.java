@@ -220,20 +220,14 @@ public class Core implements Runnable {
         beforeStart();
 
         while (true) {
-            try {
-                checkNotification();
 
-                Message msg = executeMessage();
-                if (msg != null) {
-                    setPlan(msg);
-                }
-            } catch (NoSuchElementException e) {
-                reload();
-            } catch (NullPointerException ex) {
-                reload();
-            } catch (WebDriverException ee) {
-                reload();
+            checkNotification();
+
+            Message msg = executeMessage();
+            if (msg != null) {
+                setPlan(msg);
             }
+
             sleepCore();
         }
     }
@@ -286,7 +280,7 @@ public class Core implements Runnable {
                 }
                 attempts++;
                 if (attempts == 2) {
-                    throw new WebDriverException("Second attempt to clarify element");
+                    reload();
                 }
             }
             return msg;

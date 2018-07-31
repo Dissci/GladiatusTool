@@ -88,6 +88,7 @@ public class QuestsManager extends Manager {
         sleepThread(150);
         List<WebElement> list = questTable.findElements(By.className(finishButton));
         for (WebElement webElement : list) {
+            sleepThread(150);
             webElement.click();
         }
     }
@@ -96,6 +97,7 @@ public class QuestsManager extends Manager {
         sleepThread(150);
         List<WebElement> list = questTable.findElements(By.className(restartButton));
         for (WebElement webElement : list) {
+            sleepThread(150); 
             webElement.click();
         }
     }
