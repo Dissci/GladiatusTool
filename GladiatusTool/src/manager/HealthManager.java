@@ -6,11 +6,17 @@
 package manager;
 
 import core.Core;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
@@ -35,7 +41,8 @@ public class HealthManager extends Manager {
         List<WebElement> tabs = inventoryBox.findElements(By.className("awesome-tabs"));
         WebElement food = null;
         for (WebElement tab : tabs) {
-            click(tab);
+            tab.click();
+            Core.DRIVER.findElement(By.id("show-item-info")).click();
             WebElement inv = Core.DRIVER.findElement(By.id("inv"));
             List<WebElement> items = inv.findElements(By.tagName("div"));
 
@@ -56,6 +63,7 @@ public class HealthManager extends Manager {
                 .build();
 
         dragAndDrop.perform();
+        sleepThreadTo500();
     }
 
     private int getCurrentHealth() throws NoSuchElementException, NullPointerException, SessionNotCreatedException {
@@ -100,6 +108,34 @@ public class HealthManager extends Manager {
             }
         } else {
             stoppedPlan = false;
+        }
+    }
+
+    private void zoomOut() {
+        try {
+            Robot robot = new Robot();
+            for (int i = 0; i < 1; i++) {
+                robot.keyPress(KeyEvent.VK_CONTROL);
+                robot.keyPress(KeyEvent.VK_MINUS);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                robot.keyRelease(KeyEvent.VK_MINUS);
+            }
+        } catch (AWTException ex) {
+            Logger.getLogger(HealthManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void zoomIn(int loop) {
+        try {
+            Robot robot = new Robot();
+            for (int i = 0; i < loop; i++) {
+                robot.keyPress(KeyEvent.VK_CONTROL);
+                robot.keyPress(KeyEvent.VK_PLUS);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                robot.keyRelease(KeyEvent.VK_PLUS);
+            }
+        } catch (AWTException ex) {
+            Logger.getLogger(HealthManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

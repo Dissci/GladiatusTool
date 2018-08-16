@@ -23,6 +23,7 @@ import manager.CircuTurmaManager;
 import manager.QuestsManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -40,7 +41,7 @@ public class Core implements Runnable {
     public static WebDriver DRIVER;
     public static String OVERVIEW_URL;
     public static String LOGON_URL;
-    private final long sleepTime = 1000;
+    private final long sleepTime = 250;
     private boolean chrome;
     private String url;
     private LoginManager login;
@@ -55,6 +56,7 @@ public class Core implements Runnable {
     private CircuTurmaManager circuTurmaManager;
     private ArenaManager arenaManager;
     private QuestsManager questsManager;
+    private boolean pause = false;
 
     public Core(UserConfiguration userConfiguration,
             DriverConfiguration driverConfiguration) {
@@ -162,6 +164,7 @@ public class Core implements Runnable {
     }
 
     private void initQuests() {
+        questsManager = new QuestsManager(dungeonPermition, expeditionPermition, arenaPermition, turmaPermition, 0L);
         Message msg1 = questsManager.getPlan();
         if (msg1 != null) {
             queue.add(msg1);
@@ -196,9 +199,7 @@ public class Core implements Runnable {
     private void reload() {
         DRIVER.close();
         initQueue();
-        DRIVER.manage().deleteAllCookies();
-        DRIVER.get(LOGON_URL);
-        //initDriver(url, chrome);
+        initDriver(url, chrome);
         initBeforeStart();
     }
 
@@ -220,21 +221,30 @@ public class Core implements Runnable {
         beforeStart();
 
         while (true) {
-
             checkNotification();
-
-            Message msg = executeMessage();
-            if (msg != null) {
-                setPlan(msg);
+            try {
+                Message msg = executeMessage();
+                if (msg != null) {
+                    setPlan(msg);
+                }
+            } catch (StaleElementReferenceException e) {
+                reload();
+            } catch (NoSuchElementException eex) {
+                reload();
+            } catch (NullPointerException ex) {
+                reload();
+            } catch (WebDriverException ee) {
+                reload();
+            } catch (Throwable exx) {
+                reload();
             }
-
             sleepCore();
         }
     }
 
     private void chechHealth() {
         boolean lowHealth = manageHeal();
-        while (lowHealth) {
+        if (lowHealth) {
             List<Message> list = new ArrayList();
             for (Message message : queue) {
                 if ((message.getManager() instanceof ExpeditionManager)
@@ -280,7 +290,7 @@ public class Core implements Runnable {
                 }
                 attempts++;
                 if (attempts == 2) {
-                    reload();
+                    throw new NoSuchElementException("");
                 }
             }
             return msg;
@@ -306,7 +316,7 @@ public class Core implements Runnable {
             }
             attempts++;
             if (attempts == 2) {
-                reload();
+                throw new NoSuchElementException("");
             }
         }
     }
@@ -325,7 +335,11 @@ public class Core implements Runnable {
         Thread th = new Thread();
         try {
             th.sleep(sleepTime);
-
+            DRIVER.getTitle();
+            while (pause) {
+                DRIVER.getTitle();
+                th.sleep(sleepTime);
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(Core.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -340,8 +354,16 @@ public class Core implements Runnable {
         return dungeonManager == null ? "@SpecialCharacter" : dungeonManager.getDungeonName();
     }
 
+    public synchronized void pauseBot() {
+        pause = true;
+    }
+
     @Override
     public void run() {
         start();
+    }
+
+    public synchronized void unPauseBot() {
+        pause = false;
     }
 }

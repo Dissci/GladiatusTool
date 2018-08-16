@@ -5,22 +5,6 @@
  */
 package configuration;
 
-import manager.LoginManager;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.net.ssl.HttpsURLConnection;
-import javax.swing.JOptionPane;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 /**
  *
  * @author krkoska.tomas
@@ -61,13 +45,10 @@ public class DriverConfiguration extends Configuration {
         initSystemProperty();
     }
 
-
     public void setDriverConfig(String webDriver, String lang) {
-//     
         setWebDriver(webDriver);
         setLANG(lang);
         isWebDriverChrome();
-//       
     }
 
     private void initSystemProperty() {
@@ -79,7 +60,6 @@ public class DriverConfiguration extends Configuration {
         System.setProperty("webdriver.gecko.driver", gecko);
 
     }
-
 
     public String getWebDriver() {
         return webDriver;

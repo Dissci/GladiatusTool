@@ -6,9 +6,8 @@
 package manager;
 
 import core.Core;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -35,7 +34,9 @@ public class QuestsManager extends Manager {
     private String expeditionEnemyName = "@SpecialCharacter";
     private String dungeonName = "@@SpecialCharacter";
     private Long fullStackCooldown = 200000L;
-    private String currentCooldown = "-";
+    private boolean firstPlan = true;
+    private long globalCooldown = 200000L;
+    private boolean fullQuestsStack = false;
 
     public QuestsManager(boolean dungeon, boolean expedition, boolean arena, boolean circuTurma, Long lag) {
         super(lag);
@@ -48,23 +49,61 @@ public class QuestsManager extends Manager {
     @Override
     public void inExecute() {
         Core.DRIVER.findElements(By.className(tabBar)).get(1).click();
-        WebElement table = Core.DRIVER.findElement(By.className(questTable));
-        restartQuests(table);
-        finishQuest(table);
-        if (!isFullStackOfQuests()) {
-            chooseQuest(table);
+        restartQuests();
+        finishQuest();
+        fullQuestsStack = isFullStackOfQuests();
+        if (!fullQuestsStack && getCooldownText().contains("-")) {
+            chooseQuest();
         }
+        globalCooldown = calculateNextExecute(getCooldownText(), false);
     }
 
-    private void chooseQuest(WebElement questTable) {
-        List<WebElement> list = questTable.findElements(By.className(inactive));
+    private String getUrlIcon(WebElement element) {
+        String urlIcon = "@@";
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                List<WebElement> list = element.findElements(By.className("quest_slot_icon"));
+                if (list != null && !list.isEmpty()) {
+                    urlIcon = list.get(0).getAttribute("style");
+                    break;
+                }
+            } catch (NoSuchElementException e) {
+                attempts++;
+            }
+        }
+        return urlIcon;
+    }
+
+    private String getQuestText(WebElement element) {
+        String questText = "@@";
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                List<WebElement> list = element.findElements(By.className("quest_slot_title"));
+                if (list != null && !list.isEmpty()) {
+                    questText = list.get(0).getText();
+                    break;
+                }
+            } catch (NoSuchElementException e) {
+                attempts++;
+            }
+        }
+        return questText;
+    }
+
+    private void chooseQuest() {
+        WebElement table = Core.DRIVER.findElement(By.className(questTable));
         sleepThread(150);
+        List<WebElement> list = table.findElements(By.className(inactive));
+
         boolean accepted = false;
         for (WebElement webElement : list) {
             sleepThread(150);
-            String urlIcon = webElement.findElement(By.className("quest_slot_icon")).getAttribute("style");
-            String questText = webElement.findElement(By.className("quest_slot_title")).getText();
+            String urlIcon = getUrlIcon(webElement);
             sleepThread(150);
+            String questText = getQuestText(webElement);
+
             if ((dungeon && (questText.contains(dungeonName) || urlIcon.contains(combat)))
                     || (expedition && (questText.contains(expeditionEnemyName) || urlIcon.contains(combat)))
                     || (circuTurma && urlIcon.contains(circuTurmeQ))
@@ -77,34 +116,41 @@ public class QuestsManager extends Manager {
         if (!accepted) {
             resetTimer();
         }
-        currentCooldown = getCooldownText();
     }
 
     private void resetTimer() {
         Core.DRIVER.findElement(By.id("quest_footer_reroll")).findElement(By.className("awesome-button")).click();
     }
 
-    private void finishQuest(WebElement questTable) {
+    private void finishQuest() {
+        WebElement table = Core.DRIVER.findElement(By.className(questTable));
         sleepThread(150);
-        List<WebElement> list = questTable.findElements(By.className(finishButton));
-        for (WebElement webElement : list) {
-            sleepThread(150);
+        List<WebElement> list = table.findElements(By.className(finishButton));
+        Iterator<WebElement> i = list.iterator();
+
+        while (i.hasNext()) {
+            WebElement webElement = i.next();
             webElement.click();
+            i.remove();
         }
     }
 
-    private void restartQuests(WebElement questTable) {
+    private void restartQuests() {
+        WebElement table = Core.DRIVER.findElement(By.className(questTable));
         sleepThread(150);
-        List<WebElement> list = questTable.findElements(By.className(restartButton));
-        for (WebElement webElement : list) {
-            sleepThread(150); 
+        List<WebElement> list = table.findElements(By.className(restartButton));
+        Iterator<WebElement> i = list.iterator();
+
+        while (i.hasNext()) {
+            WebElement webElement = i.next();
             webElement.click();
+            i.remove();
         }
     }
 
     private boolean isFullStackOfQuests() {
         String accepted = Core.DRIVER.findElement(By.id("quest_header_accepted")).getText();
-        return accepted.substring(accepted.indexOf(": ") + 1, accepted.indexOf(" /")).contains("5");
+        return accepted.substring(accepted.indexOf(": ") + 1, accepted.indexOf(" /")).equals(accepted.substring(accepted.lastIndexOf("/") + 1));
     }
 
     private String getCooldownText() {
@@ -122,18 +168,15 @@ public class QuestsManager extends Manager {
     public Message getPlan() {
         sleepThreadTo1000();
 
-        Core.DRIVER.findElements(By.className(tabBar)).get(1).click();
-        String time = currentCooldown.equals("-") ? getCooldownText() : currentCooldown;
-
-        Long cooldown = calculateNextExecute(time);
-        WebElement table = Core.DRIVER.findElement(By.className(questTable));
-        restartQuests(table);
-        finishQuest(table);
-        if (isFullStackOfQuests()) {
-            cooldown += fullStackCooldown;
+        Long cooldown = fullStackCooldown;
+        if (!firstPlan) {
+            cooldown += System.currentTimeMillis();
+            if (cooldown > globalCooldown && !fullQuestsStack) {
+                cooldown = globalCooldown;
+            }
+        } else {
+            firstPlan = false;
         }
-
-        goOnOverview();
         return new Message(cooldown, this);
     }
 
@@ -148,5 +191,9 @@ public class QuestsManager extends Manager {
 
     @Override
     protected void afterExecute() {
+    }
+
+    public void reset() {
+        
     }
 }

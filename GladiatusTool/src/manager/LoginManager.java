@@ -8,6 +8,7 @@ package manager;
 import configuration.UserConfiguration;
 import core.Core;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -36,7 +37,6 @@ public class LoginManager extends Manager {
     public void inExecute() {
         Core.DRIVER.manage().deleteAllCookies();
         Core.DRIVER.close();
-
     }
 
     @Override

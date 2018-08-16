@@ -25,7 +25,7 @@ public abstract class Manager {
 
     public Manager(Long lag) {
         this.lag = lag;
-        this.rndLag = new Random(lag);
+        this.rndLag = new Random();
     }
 
     public void execute() throws StaleElementReferenceException, NoSuchElementException, NullPointerException, WebDriverException {
@@ -52,16 +52,18 @@ public abstract class Manager {
         this.lag = lag;
     }
 
-    protected long getRandomLag() {
+    protected long getRandomLag(boolean useLag) {
         long lagger = 0L;
-        if (lag < 0) {
-            int pomLag = ((int) lag * 1000);
-            lagger = (long) rndLag.nextInt(pomLag);
+        if (useLag) {
+            if (lag > 0) {
+                int pomLag = ((int) lag * 1000);
+                lagger = (long) rndLag.nextInt(pomLag);
+            }
         }
         return lagger;
     }
 
-    protected long calculateNextExecute(String cooldown) {
+    protected long calculateNextExecute(String cooldown, boolean useLag) {
         Long time = System.currentTimeMillis();
         if (cooldown.contains(":")) {
             StringBuilder builder = new StringBuilder(cooldown);
@@ -71,7 +73,7 @@ public abstract class Manager {
             time += (Long.parseLong(minutes, 10) * 60000);
             time += (Long.parseLong(seconds, 10) * 1000);
         }
-        time += getRandomLag();
+        time += getRandomLag(useLag);
         return time;
     }
 

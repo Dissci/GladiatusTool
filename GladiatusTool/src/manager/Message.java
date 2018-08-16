@@ -30,7 +30,7 @@ public class Message {
     public void execute() {
         manager.execute();
     }
-    
+
     public Message getPlan() {
         return manager.getPlan();
     }

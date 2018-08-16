@@ -22,7 +22,7 @@ public class GladiatusTool {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-         try {
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -33,7 +33,7 @@ public class GladiatusTool {
         } catch (IllegalAccessException ex) {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
+
         LoginFrame frame = new LoginFrame();
         frame.setVisible(true);
     }

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -23,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.JOptionPane;
-import manager.LoginManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,7 +34,7 @@ import org.jsoup.nodes.Element;
  */
 public class Buffer {
 
-    private final String format = ".ser";
+    private final String format = "";
 
     public void serializableObject(Object object, String fileName) {
         try {
@@ -61,7 +61,6 @@ public class Buffer {
 
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
-            Logger.getLogger(Buffer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
         } finally {
             try {
@@ -125,5 +124,30 @@ public class Buffer {
     private String substLangFromURL(Element element) {
         StringBuilder builder = new StringBuilder(element.attr("href"));
         return builder.substring(2, builder.indexOf("."));
+    }
+
+    public List<String> readBytes(String filePath) throws FileNotFoundException, IOException {
+        List<String> data = new ArrayList();
+        FileReader reader = new FileReader(filePath);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String line;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            data.add(tranformString(line));
+        }
+        reader.close();
+        return data;
+    }
+
+    private String tranformString(String bytesString) {
+        String[] byteValues = bytesString.substring(0, bytesString.length() - 1).split("x");
+        byte[] bytes = new byte[byteValues.length];
+
+        for (int i = 0, len = bytes.length; i < len; i++) {
+            Integer pom = Integer.parseInt(byteValues[i].trim());
+            pom = pom / 3;
+            bytes[i] = Byte.parseByte(Integer.toString(pom));
+        }
+        return new String(bytes);
     }
 }

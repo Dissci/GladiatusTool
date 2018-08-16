@@ -8,9 +8,9 @@ package jFrame;
 import configuration.Buffer;
 import configuration.DriverConfiguration;
 import configuration.UserConfiguration;
+import core.Authorization;
 import core.Core;
 import java.io.IOException;
-import java.net.NetworkInterface;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jsoup.nodes.Document;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
+import org.openqa.selenium.SessionNotCreatedException;
 
 /**
  *
@@ -43,6 +39,8 @@ public class LoginFrame extends javax.swing.JFrame {
     private boolean initializedLang = false;
     private Document doc;
     private final Buffer buffer = new Buffer();
+    private Thread thread = null;
+    private Core core = null;
 
     public LoginFrame() {
         filechooser = new JFileChooser();
@@ -52,10 +50,28 @@ public class LoginFrame extends javax.swing.JFrame {
         driverConfiguration = new DriverConfiguration(browserPath.getText());
         loadImageIcon();
         init();
+        checkLicence();
         initServerList();
         initLanguageList();
         centerLoginPanel();
-        test();
+    }
+
+    private void checkLicence() {
+        Authorization auth = new Authorization();
+        if (!auth.checkLicense()) {
+            JOptionPane.showMessageDialog(null, "Your license has expired at " + auth.getLicence().toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+
+        if (userConfiguration.getUser().equals("")) {
+            userName.setText(auth.getUserName());
+            userConfiguration.setUser(auth.getUserName());
+        } else if (!auth.checkLicenceName(userConfiguration.getUser())) {
+            JOptionPane.showMessageDialog(null, "Your license ID is wrong !", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+        VersionLabel.setText("Version: 1.0.1");
+        licenselabel.setText("License expire at: " + auth.getLicence().toString());
     }
 
     private void centerLoginPanel() {
@@ -141,14 +157,18 @@ public class LoginFrame extends javax.swing.JFrame {
         return serverList.getSelectedIndex();
     }
 
-    private void saveConfig() throws IOException {
-        userConfiguration.setUserConfig(userName.getText(), password.getText(),
-                serverList.getSelectedItem().toString(), expeditions.isSelected(),
-                dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(),
-                getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
-        driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
-        buffer.serializableObject(userConfiguration, userConfiguration.getFULL_PATH());
-        buffer.serializableObject(driverConfiguration, driverConfiguration.getFULL_PATH());
+    private void saveConfig() {
+        try {
+            userConfiguration.setUserConfig(userName.getText(), password.getText(),
+                    serverList.getSelectedItem().toString(), expeditions.isSelected(),
+                    dungeons.isSelected(), arena.isSelected(), circuTurma.isSelected(),
+                    getCriticalHealthLevel(), getLag(), getDungeonMode(), getExpeditionFocus(), getServerIndex());
+            driverConfiguration.setDriverConfig(browserPath.getText(), getShortFromLang(language.getSelectedItem().toString()));
+            buffer.serializableObject(userConfiguration, userConfiguration.getFULL_PATH());
+            buffer.serializableObject(driverConfiguration, driverConfiguration.getFULL_PATH());
+        } catch (IOException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private int getExpeditionFocus() {
@@ -204,15 +224,22 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     private void start() {
+        if (thread != null && thread.isAlive()) {
+            core.unPauseBot();
+            jButton2.setEnabled(true);
+            jButton1.setEnabled(false);
+            return;
+        }
+
         if (checkBrowserPath() && checkLogin()) {
-            try {
-                saveConfig();
-                Thread thread = new Thread(new Core(userConfiguration,
-                        driverConfiguration));
-                thread.start();
-            } catch (IOException ex) {
-                Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            jButton1.setEnabled(false);
+            jButton2.setEnabled(true);
+            saveConfig();
+            core = new Core(userConfiguration, driverConfiguration);
+            thread = new Thread(core);
+            thread.start();
+            Thread th = new Thread(new ThreadListener(thread, this));
+            th.start();
         }
     }
 
@@ -293,6 +320,9 @@ public class LoginFrame extends javax.swing.JFrame {
         serverList = new javax.swing.JComboBox<>();
         password = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
+        licenselabel = new javax.swing.JLabel();
+        VersionLabel = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         expeditionOption = new javax.swing.JPanel();
         jRadioButton4 = new javax.swing.JRadioButton();
@@ -349,6 +379,7 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("User:");
 
+        userName.setEditable(false);
         userName.setText("jTextField1");
         userName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -421,6 +452,23 @@ public class LoginFrame extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 210, 94, -1));
+
+        licenselabel.setForeground(new java.awt.Color(204, 204, 204));
+        licenselabel.setText("jLabel10");
+        jPanel1.add(licenselabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
+
+        VersionLabel.setForeground(new java.awt.Color(204, 204, 204));
+        VersionLabel.setText("jLabel10");
+        jPanel1.add(VersionLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, -1, -1));
+
+        jButton2.setText("Pause");
+        jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 240, 94, -1));
 
         jTabbedPane1.addTab("Login", jPanel1);
 
@@ -687,6 +735,10 @@ public class LoginFrame extends javax.swing.JFrame {
         password.selectAll();
     }//GEN-LAST:event_passwordFocusGained
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        pauseBot();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -723,6 +775,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel VersionLabel;
     private javax.swing.JCheckBox arena;
     private javax.swing.JTextField browserPath;
     private javax.swing.JCheckBox circuTurma;
@@ -735,6 +788,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox expeditions;
     private javax.swing.JButton getPath;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -758,32 +812,23 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JSpinner lagger;
     private javax.swing.JComboBox<String> language;
+    private javax.swing.JLabel licenselabel;
     private javax.swing.JPanel loginPanel;
     private javax.swing.JPasswordField password;
     private javax.swing.JComboBox<String> serverList;
     private javax.swing.JTextField userName;
     // End of variables declaration//GEN-END:variables
 
-    private void test() {
-        try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-            for (NetworkInterface netint : Collections.list(nets)) {
-                byte[] mac = netint.getHardwareAddress();
+    void driverIsClosed() {
+        core = null;
+        thread = null;
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(false);
+    }
 
-                //Print MAC (Hardware address) in HEX format
-                if (mac != null) {
-                    System.out.printf("Hardware address: %s\n",
-                            Arrays.toString(mac));
-                    StringBuilder sbMac = new StringBuilder();
-                    for (int i = 0; i < mac.length; i++) {
-                        sbMac.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
-                    }
-                    System.out.printf("Hardware address (HEX): [%s]\n", sbMac.toString());
-                }
-            }
-        } catch (SocketException ex) {
-            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+    private void pauseBot() {
+        jButton1.setEnabled(true);
+        jButton2.setEnabled(false);
+        core.pauseBot();
     }
 }

@@ -7,8 +7,6 @@ package manager;
 
 import core.Core;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -53,7 +51,7 @@ public class ExpeditionManager extends Manager {
         sleepThreadTo1000();
         WebElement cooldown_bar = Core.DRIVER.findElement(By.id("cooldown_bar_text_expedition"));
         String time = cooldown_bar.getText();
-        Long cooldown = calculateNextExecute(time);
+        Long cooldown = calculateNextExecute(time, true);
         return new Message(cooldown, this);
     }
 

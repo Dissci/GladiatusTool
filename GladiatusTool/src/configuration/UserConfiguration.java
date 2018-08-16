@@ -47,7 +47,6 @@ public class UserConfiguration extends Configuration {
         setDungeonMode(dungeonMode);
         setExpeditionFocus(expeditionFocus);
         setServerIndex(serverIndex);
-
     }
 
     public String getUser() {

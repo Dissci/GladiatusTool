@@ -7,8 +7,6 @@ package manager;
 
 import core.Core;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -40,6 +38,12 @@ public class FightManager extends Manager {
         WebElement table = Core.DRIVER.findElement(By.id(own));
         List<WebElement> rows = table.findElements(By.tagName("tr"));
         click(chooseEnemy(rows));
+        List<WebElement> list = Core.DRIVER.findElements(By.id("blackoutDialogbod"));
+        if (list != null && !list.isEmpty()) {
+            list.get(0).findElements(By.className("awesome-button")).get(1).click();
+            sleepThreadTo500();
+            Core.DRIVER.findElement(By.className("button1")).click();
+        }
     }
 
     private WebElement chooseEnemy(List<WebElement> rows) {
@@ -71,7 +75,7 @@ public class FightManager extends Manager {
         sleepThreadTo1000();
         WebElement cooldown_bar = Core.DRIVER.findElement(By.id(cooldownBarText));
         String time = cooldown_bar.getText();
-        Long cooldown = calculateNextExecute(time);
+        Long cooldown = calculateNextExecute(time, true);
         return new Message(cooldown, this);
     }
 
