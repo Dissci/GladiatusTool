@@ -38,11 +38,18 @@ public class FightManager extends Manager {
         WebElement table = Core.DRIVER.findElement(By.id(own));
         List<WebElement> rows = table.findElements(By.tagName("tr"));
         click(chooseEnemy(rows));
-        List<WebElement> list = Core.DRIVER.findElements(By.id("blackoutDialogbod"));
-        if (list != null && !list.isEmpty()) {
-            list.get(0).findElements(By.className("awesome-button")).get(1).click();
-            sleepThreadTo500();
-            Core.DRIVER.findElement(By.className("button1")).click();
+        sleepThreadTo1000();
+        String currentURL = Core.DRIVER.getCurrentUrl();
+        if (!currentURL.contains("reports")) {
+            List<WebElement> list = Core.DRIVER.findElements(By.id("blackoutDialogbod"));
+            if (list != null && !list.isEmpty()) {
+                List<WebElement> listButtons = list.get(0).findElements(By.className("awesome-button"));
+                if (listButtons != null && !listButtons.isEmpty()) {
+                    listButtons.get(1).click();
+                    sleepThreadTo500();
+                    Core.DRIVER.findElement(By.className("button1")).click();
+                }
+            }
         }
     }
 

@@ -83,7 +83,7 @@ public abstract class Manager {
     }
 
     protected void goOnOverview() {
-        sleepThreadTo500();
+        sleepThreadTo1000();
         Core.DRIVER.get(Core.OVERVIEW_URL);
     }
 

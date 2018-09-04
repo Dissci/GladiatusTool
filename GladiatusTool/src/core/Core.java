@@ -196,11 +196,46 @@ public class Core implements Runnable {
         }
     }
 
-    private void reload() {
+    private void sleepThread(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Core.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void resetDriver() {
         DRIVER.close();
         initQueue();
         initDriver(url, chrome);
         initBeforeStart();
+    }
+
+    private void reload() {
+        if (DRIVER.getCurrentUrl().contains("submod=refresh")) {
+            sleepThread(120000);
+            resetDriver();
+        } else if (DRIVER.getCurrentUrl().contains("needLogin")) {
+            sleepThread(120000);
+            resetDriver();
+        } else if (!DRIVER.findElements(By.id("errorPageContainer")).isEmpty()) {
+            int attempt = 1;
+            boolean catched = false;
+            do {
+                catched = false;
+                sleepThread(attempt * 5000);
+                try {
+                    DRIVER.get(LOGON_URL);
+                } catch (WebDriverException e) {
+                    attempt++;
+                    catched = true;
+                }
+            } while (catched);
+            initQueue();
+            initBeforeStart();
+        } else {
+            resetDriver();
+        }
     }
 
     private void beforeStart() {
